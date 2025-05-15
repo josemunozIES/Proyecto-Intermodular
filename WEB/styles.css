@@ -1,0 +1,122 @@
+.book{
+	float: right;
+	border-style: solid;
+	border-radius: 20px;
+	width: 140px;
+	height: 30px;
+	text-align: center;
+	padding-top: 10px;
+	color: rgb(246 111 77);
+
+}
+.container{
+	max-width: 1200px;
+}
+body{
+	width: 1200px;
+	background-color: rgb(250 248 237);
+	font-family: "Roboto", sans-serif;
+	margin: 0 auto;
+}
+ul{
+	width: 50%;
+}
+li{
+	display: inline-block;
+	width: 90px;
+	text-align:center;
+	color: rgb(91 95 98);
+	font-weight: 550;
+}
+
+.logo{
+	margin-left: -25px;
+	margin-bottom: -14px;
+	
+	
+}
+.map-icon{
+	position: relative;
+	top: -450px;
+	left: -475px;
+}
+.hero-image{
+	float: right;
+}
+h1{
+	position:relative;
+	margin-top: 60px;
+	font-size: 90px;
+	margin-bottom: 30px;
+}
+h1+p{
+font-size: 20px;
+font-weight: 300;
+}
+
+
+h2{
+	margin-top: 200px;
+	font-size: 50px;
+	font-weight: 500;
+}
+.destinations-container{
+	position: center;
+}
+.card{
+	border-color: white;
+	border-radius: 20px;
+	border-style: solid;
+	display: inline-block;
+	padding: 7px;
+	padding-bottom: 30px;
+	margin: 8px;
+}
+.card:hover{
+	background:  rgb(255, 253, 245);
+	}
+.card-button{
+
+	float: right;
+	border-style: solid;
+	border-radius: 20px;
+	width: 110px;
+	height: 25px;
+	text-align: center;
+	padding-top: 6px;
+	color: rgb(91 95 98);
+	margin-top: 15px;
+}
+
+.newsletter-content{
+	background-image: url('images/bg-newsletter.jpg'); 
+	background-repeat: no-repeat; 
+	width: 1200px; 
+	height: 350px;
+	border-radius: 30px;
+	text-align: center;
+
+}
+
+input{
+	border: none;
+	width: 500px;
+	height: 50px;
+	border-radius: 10px;
+	margin-top: 20px;
+}
+
+.footer{
+	background-color: white;
+	text-align: center;
+	font-weight: 300;
+	margin-top: 80px;
+	height: 300px;
+}
+.logo1 {
+	margin-top: 100px;
+}
+.redes{
+	width: 110px;
+
+}
