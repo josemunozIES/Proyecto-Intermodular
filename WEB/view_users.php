@@ -5,11 +5,6 @@ if (!isset($_SESSION["user"]) || $_SESSION["admin"] !== "yes") {
     exit();
 }
 ?>
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,9 +19,14 @@ if (!isset($_SESSION["user"]) || $_SESSION["admin"] !== "yes") {
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
       <a href="index.php" class="nav-box">Home</a>
-      <a href="login.php" class="nav-box">Login</a>
-      <a href="register_user.php" class="nav-box">Register</a>
-      <a href="view_users.php" class="nav-box">View Users</a>
+          <?php
+              if (isset($_SESSION["user"])) {
+                  echo '<a href="logout.php" class="nav-box">Logout</a>';
+              } else {
+                  echo '<a href="login.php" class="nav-box">Login</a>';
+                  echo '<a href="register_user.php" class="nav-box">Register</a>';
+              }
+          ?>
     </nav>
   </header>
 

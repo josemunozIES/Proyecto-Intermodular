@@ -14,7 +14,7 @@ session_start();
 <body>
       
     <header class="header container">
-    <a href="book_now.php" class="book">Book now</a>
+    <a href="book_holiday.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
           <a href="index.php" class="nav-box">Home</a>
@@ -23,18 +23,18 @@ session_start();
                   echo '<a href="logout.php" class="nav-box">Logout</a>';
               } else {
                   echo '<a href="login.php" class="nav-box">Login</a>';
+                  echo '<a href="register_user.php" class="nav-box">Register</a>';
               }
           ?>
-          <a href="register_user.php" class="nav-box">Register</a>
+          <a href="view_bookings.php" class="nav-box">View Bookings</a>
           <a href="view_users.php" class="nav-box">View Users</a>
-            </nav>
-            <?php
+           <?php
             if (isset($_SESSION["user"])) {
-                echo "<p>Hi " . htmlspecialchars($_SESSION["user"]) . "!</p>";
+                echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
             }
             ?>
-
-          </header>
+            </nav>
+           </header>
       
       <section class="hero-container">
           <div class="hero-image">
@@ -44,7 +44,13 @@ session_start();
         <div class="hero-content">
           <h1><br>Discover the<br> Best Lovely<br> Places</h1>
           <p>Plan and book your perfect trip with expert advice, travel<br> tips, destination information, and inspiration from us.</p>
+          <div class="guides-section">
+            <a href="guides.php">
+          <img src="images/guides.jpg" alt="Our Guides" class="guides-image">
+             </a>
         </div>
+        </div>
+        
       </section>
       
       <section class="destinations-container">
