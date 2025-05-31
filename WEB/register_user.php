@@ -11,11 +11,9 @@
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
       <a href="index.php" class="nav-box">Home</a>
-      <a href="#" class="nav-box">About Us</a>
-      <a href="#" class="nav-box">Destinations</a>
-      <a href="#" class="nav-box">Tours</a>
-      <a href="#" class="nav-box">Blog</a>
-      <a href="login.php" class="nav-box">Log in / Register</a>
+      <a href="login.php" class="nav-box">Login</a>
+      <a href="register_user.php" class="nav-box">Register</a>
+      <a href="view_users.php" class="nav-box">View Users</a>
     </nav>
   </header>
 
@@ -50,7 +48,7 @@
 
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = trim($_POST["email"]);
-            $passwordInput = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
+            $passwordInput = trim($_POST["password"]);
             $nombre = trim($_POST["name"]);
             $apellido = trim($_POST["surname"]);
             $apellido2 = !empty($_POST["second_surname"]) ? trim($_POST["second_surname"]) : null;
@@ -63,15 +61,15 @@
 
     if ($result !== false) {
         $row = pg_fetch_assoc($result);
-        header("refresh:2;url=register_user.php");
+        header("refresh:3;url=register_user.php");
         echo "<p class='success'> User created successfully! Email: " . htmlspecialchars($row['email']) . "</p>";
     } else {
         $error = pg_last_error($conn);
         if (strpos($error, "duplicate key value violates unique constraint") !== false) {
-            header("refresh:2;url=register_user.php");
+            header("refresh:3;url=register_user.php");
             echo "<p class='error'> --------> ERROR! Email already in use. Please try another. <--------</p>";
         } else {
-            header("refresh:2;url=register_user.php");
+            header("refresh:3;url=register_user.php");
             echo "<p class='error'> ------- Error creating user: $error --------</p>";
         }
     }

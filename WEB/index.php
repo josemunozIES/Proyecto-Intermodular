@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,19 +12,29 @@
  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+      
     <header class="header container">
     <a href="book_now.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
           <a href="index.php" class="nav-box">Home</a>
-          <a href="#" class="nav-box">About Us</a>
-          <a href="#" class="nav-box">Destinations</a>
-          <a href="#" class="nav-box">Tours</a>
-          <a href="#" class="nav-box">Blog</a>
-          <a href="login.php" class="nav-box">Log in / Register</a>
-        </nav>
+          <?php
+              if (isset($_SESSION["user"])) {
+                  echo '<a href="logout.php" class="nav-box">Logout</a>';
+              } else {
+                  echo '<a href="login.php" class="nav-box">Login</a>';
+              }
+          ?>
+          <a href="register_user.php" class="nav-box">Register</a>
+          <a href="view_users.php" class="nav-box">View Users</a>
+            </nav>
+            <?php
+            if (isset($_SESSION["user"])) {
+                echo "<p>Hi " . htmlspecialchars($_SESSION["user"]) . "!</p>";
+            }
+            ?>
 
-      </header>
+          </header>
       
       <section class="hero-container">
           <div class="hero-image">
@@ -73,7 +86,9 @@
       </section>
   </main>
 
-
+<?php
+require_once "DB_Connection.php";
+?>
 
   <footer class="footer-container">
     <img src="images/logo.png" alt="DAW Logo" class="logo1">
