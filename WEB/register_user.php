@@ -61,7 +61,7 @@
 
     if ($result !== false) {
         $row = pg_fetch_assoc($result);
-        header("refresh:3;url=register_user.php");
+        header("refresh:3;url=index.php");
         echo "<p class='success'> User created successfully! Email: " . htmlspecialchars($row['email']) . "</p>";
     } else {
         $error = pg_last_error($conn);
