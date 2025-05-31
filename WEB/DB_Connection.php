@@ -1,7 +1,7 @@
 <?php
 $host = "localhost"; 
 $port = "5432"; 
-$dbname = "Tavel_Site_DataBase"; 
+$dbname = "Travel_Site_DataBase"; 
 $user = "postgres"; 
 $password = "1234"; 
 

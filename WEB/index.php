@@ -13,7 +13,7 @@
     <a href="book_now.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
-          <a href="#" class="nav-box">Home</a>
+          <a href="index.php" class="nav-box">Home</a>
           <a href="#" class="nav-box">About Us</a>
           <a href="#" class="nav-box">Destinations</a>
           <a href="#" class="nav-box">Tours</a>
@@ -75,7 +75,7 @@
 
 
 
-  <footer class="footer">
+  <footer class="footer-container">
     <img src="images/logo.png" alt="DAW Logo" class="logo1">
     <p>Enjoy the touring</p>
     <img src="images/redes.png" alt="DAW Logo" class="redes">
