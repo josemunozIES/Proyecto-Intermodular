@@ -6,21 +6,21 @@
   <title>Travel Website</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" 
   rel="stylesheet">
- <link rel="stylesheet" href="styles.css">
+ <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <header class="header container">
-      <div class="book">Book now</div>
-      <nav>
-          <ul>
-            <li><img src="images/logo.png" alt="DAW Logo" class="logo"></li>
-            <li>Home</li>
-            <li>About Us</li>
-            <li>Destinations</li>
-            <li>Tours</li>
-            <li>Blog</li>
-          </ul>
-        </nav>  
+    <a href="book_now.php" class="book">Book now</a>
+        <nav class="nav-boxes">
+          <img src="images/logo.png" alt="DAW Logo" class="logo">
+          <a href="#" class="nav-box">Home</a>
+          <a href="#" class="nav-box">About Us</a>
+          <a href="#" class="nav-box">Destinations</a>
+          <a href="#" class="nav-box">Tours</a>
+          <a href="#" class="nav-box">Blog</a>
+          <a href="login.php" class="nav-box">Log in / Register</a>
+        </nav>
+
       </header>
       
       <section class="hero-container">
@@ -41,19 +41,22 @@
             <img src="images/noticia1.jpg" alt="Mountain Hiking" class="card-image">
             <h3>Mountain Hiking Tour</h3>
             <p>Mountain Hicking Tour</p>
-            <a style="text-decoration:none" href="#" class="card-button">Book Now</a>
+            <a style="text-decoration:none" href="bookings/create.php" class="card-button">Book Now</a>
+
           </div>
           <div class="card">
             <img src="images/noticia2.jpg" alt="Machu Picchu" class="card-image">
             <h3>Machu Picchu, Peru</h3>
             <p>Machu Picchu, Peru</p>
-            <a style="text-decoration:none" href="#" class="card-button">Book Now</a>
+            <a style="text-decoration:none" href="bookings/create.php" class="card-button">Book Now</a>
+
           </div>
           <div class="card">
             <img src="images/noticia3.jpg" alt="Grand Canyon" class="card-image">
             <h3>The Grand Canyon, Arizona</h3>
             <p>Mountain Hicking Tour</p>
-            <a style="text-decoration:none" href="#" class="card-button">Book Now</a>
+            <a style="text-decoration:none" href="bookings/create.php" class="card-button">Book Now</a>
+
           </div>
         </div>
       </section>
