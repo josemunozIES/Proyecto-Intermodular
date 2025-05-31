@@ -9,6 +9,6 @@ $conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pa
 if (!$conn) {
     echo "Error: Unable to connect to the database.\n";
 } else{
-    echo "CONEXIÓN!";
+   // echo "CONEXIÓN!";
 }
 ?>

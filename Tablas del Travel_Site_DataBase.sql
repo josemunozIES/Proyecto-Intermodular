@@ -8,8 +8,14 @@ CREATE TABLE users (
   apellido VARCHAR(50) NOT NULL,
   apellido2 VARCHAR(50),
   edad INTEGER CHECK (edad >= 18),
-  password VARCHAR(255) NOT NULL -- password hash
+  password VARCHAR(255) NOT NULL -- NO HASH. LOS GUARDAMOS COMO TEXTO.
+  admin VARCHAR(10) DEFAULT 'no' --Añadimos condicion de admin. Y nos insertamos ya.
 );
+
+INSERT INTO users (nombre, apellido, apellido2, email, password, admin) VALUES
+('Bradley','James','Burrage' , 'brad@domain.com', '1234', 'yes'),
+('Hector', 'Chaparro', 'Misó','hector@domain.com', '1234', 'yes'),
+('Jose Franciso', 'Muñoz','Palao', 'jose@domain.com', '1234', 'yes');
 
 -- Tabla de destinos, para cuando se crea uno deba incluir los dartos del pasaporte.
 CREATE TABLE destinations (

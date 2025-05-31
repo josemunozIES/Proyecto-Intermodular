@@ -193,7 +193,27 @@ p.error {
 
 p.success {
   color: green;
-  font-size: 30px; 
+  font-size: 25px; 
   font-weight: bold;
   text-align: center;
+}
+table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+th {
+  background-color: #f6b37f;
+}
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.container1{
+  text-align: center;
+  
 }

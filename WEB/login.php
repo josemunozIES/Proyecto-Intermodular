@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +14,10 @@
     <a href="bookings/create.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
-          <a href="index.php" class="nav-box">Home</a>
-          <a href="#" class="nav-box">About Us</a>
-          <a href="#" class="nav-box">Destinations</a>
-          <a href="#" class="nav-box">Tours</a>
-          <a href="#" class="nav-box">Blog</a>
-          <a href="login.php" class="nav-box">Log in / Register</a>
+      <a href="index.php" class="nav-box">Home</a>
+      <a href="login.php" class="nav-box">Login</a>
+      <a href="register_user.php" class="nav-box">Register</a>
+      <a href="view_users.php" class="nav-box">View Users</a>
         </nav>
 
       </header>
@@ -37,21 +38,26 @@
       <a href="register_user.php" class="register-link">Don’t have an account? Register</a>
 
       <?php
-  session_start();
-
-  require_once "DB_Connection.php";
-
+require_once "DB_Connection.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST["email"]);
+    $email = trim($_POST["username"]);
     $passwordInput = trim($_POST["password"]);
 
-    $result = pg_query_params($conn, "SELECT * FROM users WHERE email=$1", array($email));
+    $result = @pg_query_params($conn, "SELECT * FROM users WHERE email=$1", array($email));
 
     if ($row = pg_fetch_assoc($result)) {
-        $_SESSION["user"] = $row["name"];
-        echo "<p class='success'> Login successful. Welcome, " . htmlspecialchars($row["name"]) . "!</p>";
+
+        if ($passwordInput == $row['password']) { 
+            $_SESSION["user"] = $row["nombre"]; 
+            $_SESSION["email"] = $row["email"];
+            $_SESSION["admin"] = $row["admin"];
+            header("Location: index.php");
+            exit();
+        } else {
+            $errorMsg = "Invalid password.";
+        }
     } else {
-        echo "<p class='error'> Invalid email or password.</p>";
+        $errorMsg = "Invalid email or password.";
     }
 }
 ?>
