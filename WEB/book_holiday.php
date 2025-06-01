@@ -9,7 +9,7 @@ session_start();
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="header container">
+ <header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -23,6 +23,7 @@ session_start();
               }
           ?>
           <a href="view_users.php" class="nav-box">View Users</a>
+          <a href="view_bookings.php" class="nav-box">View Bookings</a>
            <?php
             if (isset($_SESSION["user"])) {
                 echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
@@ -39,6 +40,13 @@ session_start();
       require_once "DB_Connection.php";
 
       $email = $_SESSION["email"] ?? null;
+
+      if (!$email) {
+        echo "<p class='error'>You must be logged in to book a holiday.</p>";
+        echo "<p>Please <a href='login.php' class='nav-box'>log in</a> to continue.</p>";
+        exit();
+        }
+
       $result = @pg_query_params($conn, "SELECT passport FROM users WHERE email=$1", [$email]);
       $user = pg_fetch_assoc($result);
       $passport = $user['passport'] ?? null;

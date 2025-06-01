@@ -60,7 +60,12 @@ CREATE TABLE bookings (
     booking_begin DATE, 
     booking_begin DATE --Añadido principio y fin del booking para que que se pueda hacer un booking si estas bookeado ya en otra fecha.
 );
-
+--Añadido tabla para poder añadir más personas en un booking.
+/*CREATE TABLE booking_passengers (
+    booking_id INTEGER REFERENCES bookings(id),
+    user_passport VARCHAR(50) REFERENCES users(passport),
+    PRIMARY KEY (booking_id, user_passport)
+);*/
 
 -- Many-to-many relationship: Users <-> Destinations. Esta no lo tengo claro todavia como lo vamos a hacer
 /*CREATE TABLE eligir (

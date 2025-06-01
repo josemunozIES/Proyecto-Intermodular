@@ -26,8 +26,8 @@ session_start();
                   echo '<a href="register_user.php" class="nav-box">Register</a>';
               }
           ?>
-          <a href="view_bookings.php" class="nav-box">View Bookings</a>
           <a href="view_users.php" class="nav-box">View Users</a>
+          <a href="view_bookings.php" class="nav-box">View Bookings</a>
            <?php
             if (isset($_SESSION["user"])) {
                 echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';

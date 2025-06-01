@@ -8,10 +8,11 @@ session_start();
 <title>Login</title>
 <link rel="stylesheet" href="styles.css">
 
-</head>
+</head>          
+
 <body>
     <header class="header container">
-    <a href="bookings/create.php" class="book">Book now</a>
+    <a href="book_holiday.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
       <a href="index.php" class="nav-box">Home</a>

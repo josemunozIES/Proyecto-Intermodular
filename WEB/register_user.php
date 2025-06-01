@@ -14,6 +14,7 @@
       <a href="login.php" class="nav-box">Login</a>
       <a href="register_user.php" class="nav-box">Register</a>
       <a href="view_users.php" class="nav-box">View Users</a>
+      <a href="view_bookings.php" class="nav-box">View Bookings</a>
     </nav>
   </header>
 
@@ -28,6 +29,9 @@
         <label>Password:</label>
         <input type="password" name="password" required>
 
+        <label>Repeat Password:</label>
+        <input type="password" name="repeat_password" required>
+
         <label>First Name:</label>
         <input type="text" name="name" required>
 
@@ -40,6 +44,9 @@
         <label>Age:</label>
         <input type="number" name="age" min="18" required>
 
+        <label>Passport Number (optional):</label>
+        <input type="text" name="passport">
+
         <input class="book1" type="submit" value="Register">
       </form>
 
@@ -47,34 +54,40 @@
       require_once "DB_Connection.php";
 
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = trim($_POST["email"]);
-            $passwordInput = trim($_POST["password"]);
-            $nombre = trim($_POST["name"]);
-            $apellido = trim($_POST["surname"]);
-            $apellido2 = !empty($_POST["second_surname"]) ? trim($_POST["second_surname"]) : null;
-            $edad = intval($_POST["age"]);
+          $email = trim($_POST["email"]);
+          $passwordInput = trim($_POST["password"]);
+          $repeatPassword = trim($_POST["repeat_password"]);
+          $nombre = trim($_POST["name"]);
+          $apellido = trim($_POST["surname"]);
+          $apellido2 = !empty($_POST["second_surname"]) ? trim($_POST["second_surname"]) : null;
+          $edad = intval($_POST["age"]);
+          $passport = !empty($_POST["passport"]) ? trim($_POST["passport"]) : null;
 
-    $result = @pg_query_params($conn,
-        "INSERT INTO users (email, nombre, apellido, apellido2, edad, password)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING email",
-        array($email, $nombre, $apellido, $apellido2, $edad, $passwordInput));
+          if ($passwordInput !== $repeatPassword) {
+              echo "<p class='error'>Passwords do not match. Please try again.</p>";
+              exit();
+          }
 
-    if ($result !== false) {
-        $row = pg_fetch_assoc($result);
-        header("refresh:3;url=index.php");
-        echo "<p class='success'> User created successfully! Email: " . htmlspecialchars($row['email']) . "</p>";
-    } else {
-        $error = pg_last_error($conn);
-        if (strpos($error, "duplicate key value violates unique constraint") !== false) {
-            header("refresh:3;url=register_user.php");
-            echo "<p class='error'> --------> ERROR! Email already in use. Please try another. <--------</p>";
-        } else {
-            header("refresh:3;url=register_user.php");
-            echo "<p class='error'> ------- Error creating user: $error --------</p>";
-        }
-    }
-}
+          $result = @pg_query_params($conn,
+              "INSERT INTO users (email, nombre, apellido, apellido2, edad, password, passport)
+               VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING email",
+              array($email, $nombre, $apellido, $apellido2, $edad, $passwordInput, $passport));
 
+          if ($result !== false) {
+              $row = pg_fetch_assoc($result);
+              header("refresh:3;url=index.php");
+              echo "<p class='success'> User created successfully! Email: " . htmlspecialchars($row['email']) . "</p>";
+          } else {
+              $error = pg_last_error($conn);
+              if (strpos($error, "duplicate key value violates unique constraint") !== false) {
+                  header("refresh:3;url=register_user.php");
+                  echo "<p class='error'> --------> ERROR! Email already in use. Please try another. <--------</p>";
+              } else {
+                  header("refresh:3;url=register_user.php");
+                  echo "<p class='error'> ------- Error creating user: $error --------</p>";
+              }
+          }
+      }
       ?>
     </div>
   </main>
