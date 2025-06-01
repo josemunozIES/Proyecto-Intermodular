@@ -9,7 +9,7 @@ session_start();
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="header container">
+   <header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -24,7 +24,7 @@ session_start();
       ?>
       <a href="view_users.php" class="nav-box">View Users</a>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
-      <a href="guides.php" class="nav-box">See guides</a>
+      <a href="guides.php" class="nav-box">Our Guides</a>
       <?php
         if (isset($_SESSION["user"])) {
             echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
