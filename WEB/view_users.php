@@ -9,28 +9,29 @@ session_start();
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
- <header class="header container">
+<header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
-        <nav class="nav-boxes">
-          <img src="images/logo.png" alt="DAW Logo" class="logo">
-          <a href="index.php" class="nav-box">Home</a>
-          <?php
-              if (isset($_SESSION["user"])) {
-                  echo '<a href="logout.php" class="nav-box">Logout</a>';
-              } else {
-                  echo '<a href="login.php" class="nav-box">Login</a>';
-                  echo '<a href="register_user.php" class="nav-box">Register</a>';
-              }
-          ?>
-          <a href="view_users.php" class="nav-box">View Users</a>
-          <a href="view_bookings.php" class="nav-box">View Bookings</a>
-           <?php
-            if (isset($_SESSION["user"])) {
-                echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-            }
-            ?>
-            </nav>
-           </header>
+    <nav class="nav-boxes">
+      <img src="images/logo.png" alt="DAW Logo" class="logo">
+      <a href="index.php" class="nav-box">Home</a>
+      <?php
+          if (isset($_SESSION["user"])) {
+              echo '<a href="logout.php" class="nav-box">Logout</a>';
+          } else {
+              echo '<a href="login.php" class="nav-box">Login</a>';
+              echo '<a href="register_user.php" class="nav-box">Register</a>';
+          }
+      ?>
+      <a href="view_users.php" class="nav-box">View Users</a>
+      <a href="view_bookings.php" class="nav-box">My Bookings</a>
+      <a href="guides.php" class="nav-box">See guides</a>
+      <?php
+        if (isset($_SESSION["user"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
+        }
+      ?>
+    </nav>
+  </header>
 
   <main class="container1">
     <h1 style="font-size: 40px;">All User Details</h1>

@@ -29,7 +29,12 @@ INSERT INTO destinations (ciudad, pais) VALUES
 ('Paris', 'France'),
 ('Tokyo', 'Japan'),
 ('New York', 'USA'),
-('Cancun', 'Mexico');
+('Cancun', 'Mexico'),
+('Rio de Janeiro', 'Brazil'),
+('Cape Town', 'South Africa'),
+('Seoul', 'South Korea'),
+('Sydney', 'Australia'),
+('Marrakech', 'Morocco');
 
 -- Tabla de guias.
 CREATE TABLE guides (
@@ -44,7 +49,9 @@ INSERT INTO guides (id,nombre, apellido,  especialidad, ciudad) VALUES
 (1,'Marie', 'Dupont', 'Geography', 'Paris'),
 (2,'Hiroshi', 'Tanaka', 'History', 'Tokyo'),
 (3,'John', 'Smith', 'Architecture', 'New York'),
-(4,'Ana', 'Lopez', 'Food', 'Cancun');
+(4,'Ana', 'Lopez', 'Food', 'Cancun'),
+(5,'Lucas', 'Martín', 'Architecture', 'Barcelona'),
+(6,'Sophie', 'Dubois', 'Food', 'Florence');
 
 -- Una tabla para guardar los datos de los pasaportes.
 CREATE TABLE passports (
@@ -58,7 +65,8 @@ CREATE TABLE bookings (
     user_passport VARCHAR(50) REFERENCES users(passport),
     destination_ciudad VARCHAR(255) REFERENCES destinations(ciudad),
     booking_begin DATE, 
-    booking_begin DATE --Añadido principio y fin del booking para que que se pueda hacer un booking si estas bookeado ya en otra fecha.
+    booking_begin DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP --Añadido principio y fin del booking para que que se pueda hacer un booking si estas bookeado ya en otra fecha.
 );
 --Añadido tabla para poder añadir más personas en un booking.
 /*CREATE TABLE booking_passengers (

@@ -22,10 +22,17 @@ if (empty($passport)) {
     exit();
 }
 
-$existing = pg_query_params($conn, "SELECT 1 FROM bookings WHERE user_passport=$1", [$passport]);
-if (pg_num_rows($existing) > 0) {
+$overlap_query = "
+    SELECT 1 FROM bookings
+    WHERE user_passport = $1
+      AND daterange(booking_begin, booking_end, '[]') &&
+          daterange($2::date, $3::date, '[]')
+";
+$overlap_check = pg_query_params($conn, $overlap_query, [$passport, $booking_begin, $booking_end]);
+
+if (pg_num_rows($overlap_check) > 0) {
     header("refresh:3;url=book_holiday.php");
-    echo "<p class='error'>You already have a booking and cannot book another destination.</p>";
+    echo "<p class='error'>Error: You already have a booking that overlaps with these dates.</p>";
     exit();
 }
 
@@ -34,11 +41,10 @@ $insert = pg_query_params($conn, "
     VALUES ($1, $2, $3, $4)
 ", [$passport, $destination, $booking_begin, $booking_end]);
 
-
 if ($insert) {
     header("refresh:3;url=index.php");
     echo "<p class='success'>Booking successful! Destination: $destination from $booking_begin to $booking_end.</p>";
-} else {      
+} else {
     header("refresh:3;url=book_holiday.php");
     echo "<p class='error'>Error booking the destination.</p>";
 }

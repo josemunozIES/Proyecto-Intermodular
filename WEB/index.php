@@ -13,29 +13,29 @@ session_start();
 </head>
 <body>
       
-    <header class="header container">
+   <header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
-        <nav class="nav-boxes">
-          <img src="images/logo.png" alt="DAW Logo" class="logo">
-          <a href="index.php" class="nav-box">Home</a>
-          <?php
-              if (isset($_SESSION["user"])) {
-                  echo '<a href="logout.php" class="nav-box">Logout</a>';
-              } else {
-                  echo '<a href="login.php" class="nav-box">Login</a>';
-                  echo '<a href="register_user.php" class="nav-box">Register</a>';
-              }
-          ?>
-          <a href="view_users.php" class="nav-box">View Users</a>
-          <a href="view_bookings.php" class="nav-box">View Bookings</a>
-           <?php
-            if (isset($_SESSION["user"])) {
-                echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-            }
-            ?>
-            </nav>
-           </header>
-      
+    <nav class="nav-boxes">
+      <img src="images/logo.png" alt="DAW Logo" class="logo">
+      <a href="index.php" class="nav-box">Home</a>
+      <?php
+          if (isset($_SESSION["user"])) {
+              echo '<a href="logout.php" class="nav-box">Logout</a>';
+          } else {
+              echo '<a href="login.php" class="nav-box">Login</a>';
+              echo '<a href="register_user.php" class="nav-box">Register</a>';
+          }
+      ?>
+      <a href="view_users.php" class="nav-box">View Users</a>
+      <a href="view_bookings.php" class="nav-box">My Bookings</a>
+      <a href="guides.php" class="nav-box">See guides</a>
+      <?php
+        if (isset($_SESSION["user"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
+        }
+      ?>
+    </nav>
+  </header>
       <section class="hero-container">
           <div class="hero-image">
             <img src="images/section1.png" alt="Man holding passport">
@@ -60,21 +60,21 @@ session_start();
             <img src="images/noticia1.jpg" alt="Mountain Hiking" class="card-image">
             <h3>Mountain Hiking Tour</h3>
             <p>Mountain Hicking Tour</p>
-            <a style="text-decoration:none" href="bookings/create.php" class="card-button">Book Now</a>
+            <a style="text-decoration:none" href="book_holiday.php" class="card-button">Book Now</a>
 
           </div>
           <div class="card">
             <img src="images/noticia2.jpg" alt="Machu Picchu" class="card-image">
             <h3>Machu Picchu, Peru</h3>
             <p>Machu Picchu, Peru</p>
-            <a style="text-decoration:none" href="bookings/create.php" class="card-button">Book Now</a>
+            <a style="text-decoration:none" href="book_holiday.php" class="card-button">Book Now</a>
 
           </div>
           <div class="card">
             <img src="images/noticia3.jpg" alt="Grand Canyon" class="card-image">
             <h3>The Grand Canyon, Arizona</h3>
             <p>Mountain Hicking Tour</p>
-            <a style="text-decoration:none" href="bookings/create.php" class="card-button">Book Now</a>
+            <a style="text-decoration:none" href="book_holiday.php" class="card-button">Book Now</a>
 
           </div>
         </div>
@@ -85,12 +85,13 @@ session_start();
           <mg src="images/bg-newsletter.jpg" alt="Newsletter" class="newsletter-image">
           <h2><br>Sign up to our newsletter</h2>
           <p>Receive the latest news, updates, and many other things<br> every week.</p>
-          <form>
-            <input type="email" placeholder="   Enter your email address ">
+            <form method="post" action="">
+            <input type="email" name="newsletter_email" placeholder="    Enter your email address" required>
+            <input type="submit" name="subscribe" value="Subscribe" class="sub-button">
           </form>
         </div>
       </section>
-  </main>
+     </main>
 
 <?php
 require_once "DB_Connection.php";

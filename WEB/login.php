@@ -15,13 +15,25 @@ session_start();
     <a href="book_holiday.php" class="book">Book now</a>
         <nav class="nav-boxes">
           <img src="images/logo.png" alt="DAW Logo" class="logo">
-      <a href="index.php" class="nav-box">Home</a>
-      <a href="login.php" class="nav-box">Login</a>
-      <a href="register_user.php" class="nav-box">Register</a>
-      <a href="view_users.php" class="nav-box">View Users</a>
-        </nav>
-
-      </header>
+          <a href="index.php" class="nav-box">Home</a>
+          <?php
+              if (isset($_SESSION["user"])) {
+                  echo '<a href="logout.php" class="nav-box">Logout</a>';
+              } else {
+                  echo '<a href="login.php" class="nav-box">Login</a>';
+                  echo '<a href="register_user.php" class="nav-box">Register</a>';
+              }
+          ?>
+          <a href="view_users.php" class="nav-box">View Users</a>
+          <a href="view_bookings.php" class="nav-box">View Bookings</a>
+           <?php
+            if (isset($_SESSION["user"])) {
+                echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
+            }
+            ?>
+            </nav>
+           </header>
+      
 <main class="container">
     <div class="login-container">
       <h1 style="font-size: 38px;">Login</h1>

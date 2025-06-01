@@ -11,26 +11,27 @@ session_start();
 <body>
  <header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
-        <nav class="nav-boxes">
-          <img src="images/logo.png" alt="DAW Logo" class="logo">
-          <a href="index.php" class="nav-box">Home</a>
-          <?php
-              if (isset($_SESSION["user"])) {
-                  echo '<a href="logout.php" class="nav-box">Logout</a>';
-              } else {
-                  echo '<a href="login.php" class="nav-box">Login</a>';
-                  echo '<a href="register_user.php" class="nav-box">Register</a>';
-              }
-          ?>
-          <a href="view_users.php" class="nav-box">View Users</a>
-          <a href="view_bookings.php" class="nav-box">View Bookings</a>
-           <?php
-            if (isset($_SESSION["user"])) {
-                echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-            }
-            ?>
-            </nav>
-           </header>
+    <nav class="nav-boxes">
+      <img src="images/logo.png" alt="DAW Logo" class="logo">
+      <a href="index.php" class="nav-box">Home</a>
+      <?php
+          if (isset($_SESSION["user"])) {
+              echo '<a href="logout.php" class="nav-box">Logout</a>';
+          } else {
+              echo '<a href="login.php" class="nav-box">Login</a>';
+              echo '<a href="register_user.php" class="nav-box">Register</a>';
+          }
+      ?>
+      <a href="view_users.php" class="nav-box">View Users</a>
+      <a href="view_bookings.php" class="nav-box">My Bookings</a>
+      <a href="guides.php" class="nav-box">See guides</a>
+      <?php
+        if (isset($_SESSION["user"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
+        }
+      ?>
+    </nav>
+  </header>
 
   <main class="container">
     <div class="login-container">
@@ -40,24 +41,6 @@ session_start();
       require_once "DB_Connection.php";
 
       $email = $_SESSION["email"] ?? null;
-
-      if (!$email) {
-        echo "<p class='error'>You must be logged in to book a holiday.</p>";
-        echo "<p>Please <a href='login.php' class='nav-box'>log in</a> to continue.</p>";
-        exit();
-        }
-
-      $result = @pg_query_params($conn, "SELECT passport FROM users WHERE email=$1", [$email]);
-      $user = pg_fetch_assoc($result);
-      $passport = $user['passport'] ?? null;
-
-      if (empty($passport)) {
-          echo "<p class='error'>You must have a passport number to book a holiday.</p>";
-            echo '<p class="update-passport-message"><a class="nav-boxs"
-             href="register_passport.php">Click here to update your profile with your passport number</a>.</p>';
-             
-          exit();
-      }
 
       $query = "
           SELECT d.ciudad, d.pais, g.nombre AS guide_name, g.apellido AS guide_surname
@@ -82,16 +65,17 @@ session_start();
           $destinations[$city]['guides'][] = $guide;
       }
       ?>
-      <form method="post" action="process_booking.php">
+
+      <form method="post" action="process_booking.php" id="bookingForm">
         <label for="destination">Select Destination:</label><br>
         <select name="destination" required>
-            <option value="" disabled selected>Choose a destination</option>
-            <?php
-            foreach ($destinations as $city => $data) {
-                $guides = implode(", ", $data['guides']);
-                echo '<option value="' . $city . '">' . $city . ', ' . $data['country'] . ' (Guides: ' . $guides . ')</option>';
-            }
-            ?>
+          <option value="" disabled selected>Choose a destination</option>
+          <?php
+          foreach ($destinations as $city => $data) {
+              $guides = implode(", ", $data['guides']);
+              echo '<option value="' . $city . '">' . $city . ', ' . $data['country'] . ' </option>';
+          }
+          ?>
         </select>
 
         <label for="booking_begin">Booking Start Date:</label>
@@ -101,8 +85,39 @@ session_start();
         <input type="date" name="booking_end" required>
 
         <input class="book1" type="submit" value="Book Now">
-     </form>
+      </form>
 
+      <?php
+      if ($email) {
+          $result = @pg_query_params($conn, "SELECT passport FROM users WHERE email=$1", [$email]);
+          $user = pg_fetch_assoc($result);
+          $passport = $user['passport'] ?? null;
+
+          if (empty($passport)) {
+              echo "<p class='error' style='margin-top:20px;'>You need a passport to complete your booking. Please register it below.</p>";
+              echo '<p class="update-passport-message"><a class="nav-boxs" href="register_passport.php">Click here to update your profile with your passport number</a>.</p>';
+              echo "
+              <script>
+                document.getElementById('bookingForm').addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  alert('You must register your passport number before booking!');
+                });
+              </script>
+              ";
+          }
+      } else {
+          echo "<p class='error' style='margin-top:20px;'>You must be logged in to make a booking.</p>";
+          echo "<p class='login-message'>Please <a href='login.php' class='nav-box'>log in</a> to continue.</p>";
+          echo "
+          <script>
+            document.getElementById('bookingForm').addEventListener('submit', function(e) {
+              e.preventDefault();
+              alert('You must be logged in to make a booking.');
+            });
+          </script>
+          ";
+      }
+      ?>
     </div>
   </main>
 
