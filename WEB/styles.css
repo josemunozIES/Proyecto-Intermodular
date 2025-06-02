@@ -4,10 +4,12 @@
 	border-radius: 20px;
 	width: 140px;
 	height: 30px;
+  position: relative;
 	text-align: center;
 	padding-top: 10px;
 	color: rgb(246 111 77);
-	margin-top: 20px;
+	margin-top: 10px;
+  z-index: 9;
 }
 .container{
 	max-width: 1200px;
@@ -16,15 +18,30 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh; 
-  background-color: rgb(250, 248, 237);
+  background-color: rgb(255, 255, 255);
   font-family: "Roboto", sans-serif;
   margin: 0 auto;
-  width: 1200px;
+  width: 100%;
 }
 main {
   flex: 1; 
 }
+.main-body{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 20%;
+  padding: 0vh 2vw 0vh 2vw;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  background-color: rgb(250, 248, 237);
+  width: 60vw;
+  min-height: 100vh; 
+  box-shadow: 4px 4px 15px;
+}
 .nav-boxes {
+  margin-top: 5px;
+  margin-right: 2vw;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -35,13 +52,14 @@ main {
 
 .nav-box {
   display: inline-block;
-  padding: 8px 12px;
+  padding: 1vh 1vw;
   border-radius: 10px;
   background-color: rgb(246, 111, 77);
   color: white;
   text-decoration: none;
   font-weight: 500;
   transition: background-color 0.3s ease;
+  z-index: 5;
 }
 
 .nav-box:hover {
@@ -56,12 +74,32 @@ main {
 }
 .map-icon{
 	position: relative;
-	top: -450px;
-	left: -475px;
+  right: 18vw;
+  top: -30vh;
+  width: 4vw;
+  height: 9vh;
 }
-.hero-image{
+.man-icon{
+  width: 17vw;
+  height: 40vh;
+}
+.hero-image{  
 	float: right;
+  margin-top: 6vh;
+  margin-right: 2vw;
+  width: fit-content;
+  height: fit-content;
 }
+ .hero-content{
+  vertical-align: top;
+ }
+ .hero-content h1{
+  margin-top: -50px;
+  font-size: 4vw;
+ }
+ .hero-content p{
+  font-size: 1vw;
+ }
 h1{
 	position:relative;
 	margin-top: 60px;
@@ -93,34 +131,55 @@ h2{
 	border-radius: 20px;
 	border-style: solid;
 	display: inline-block;
-	padding: 8px;
+  width:17vw;
+	padding: 0.7vw;
 	padding-bottom: 30px;
-	margin: 6px;
+	margin: 0.45vw;
+}
+.card-image{
+  height: 55%;
+  width: 100%;
+}
+.card h3{
+  font-size: 150%;
+  overflow: hidden;
+}
+.card p{
+  font-size: 125%;
+  overflow: hidden;
 }
 .card:hover{
 	background:  rgb(255, 253, 245);
 	}
 .card-button{
-
+  background-color: lightgray;
 	float: right;
 	border-style: solid;
-	border-radius: 20px;
-	width: 110px;
-	height: 25px;
+	border-radius: 35%;
+  font-size: 1vh;
+	width: 30%;
+	height: 10%;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
 	text-align: center;
-	padding-top: 6px;
 	color: rgb(91 95 98);
 	margin-top: 15px;
 }
-
 .newsletter-content{
+  margin-top: 10vh;
 	background-image: url('images/bg-newsletter.jpg'); 
+  background-size: cover;
 	background-repeat: no-repeat; 
-	width: 1200px; 
-	height: 350px;
+	width: 100%; 
+	height: 100%;
+  padding-bottom: 3vh;
+  padding-top: 2vh;
 	border-radius: 30px;
 	text-align: center;
-
+}
+.newsletter-content h2{
+  margin-top: 10px;
+  overflow: hidden;
 }
 
 input{
@@ -130,7 +189,9 @@ input{
 	border-radius: 20px;
 	margin-top: 20px;
 }
-
+.titulo-interactivo{
+  font-size: 4vw;
+}
 
 .redes{
 	width: 110px;
@@ -199,6 +260,22 @@ input{
   margin-top: 10px;
   margin-bottom: 20px;
 }
+.registro{
+  display: inline-block;
+  background-color: white;
+  text-align: center;
+  position: relative;
+  width: 40%;
+  right: -34vw;
+  top: -35vh;
+  border: 1px solid gray;
+  padding-top: 8vh;
+  padding-bottom: 8vh;
+}
+.registro p{
+  font-size: 1vw;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
 p.error {
   color: red;
   font-size: 20px; 
@@ -233,14 +310,18 @@ tr:nth-child(even) {
   
 }
 .guides-section {
-  margin-top: 20px;
+  margin-top: 40px;
+  margin-bottom: -90px;
   text-align: left;
+  width: 100%;
+  height: 25%;
 }
 
-.guides-section img.guides-image {
-  width: 500px; 
-  border-radius: 20%; 
-  margin-right: 50px;
+.guides-section .guides-image {
+  width: 50%;
+  height: 100%;
+  background-size: auto;
+  background-repeat: repeat-x;
 }
 
 .guides-section .guides-link:hover {
@@ -373,7 +454,7 @@ select {
   padding: 6px 12px; 
   font-size: 14px;   
   border-radius: 10px;
-  background-color: rgb(246, 111, 77);
+  background-color: rgb(12, 161, 86);
   color: white;
   border: none;
   cursor: pointer;
@@ -381,5 +462,5 @@ select {
 }
 
 .sub-button:hover {
-  background-color: rgb(255, 140, 100);
+  background-color: rgb(12, 161, 86);
 }

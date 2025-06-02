@@ -14,7 +14,7 @@ CREATE TABLE users (
 INSERT INTO users (nombre, apellido, apellido2, email, password, admin) VALUES
 ('Bradley','James','Burrage' , 'brad@domain.com', '1234', 'yes'),
 ('Hector', 'Chaparro', 'Misó','hector@domain.com', '1234', 'yes'),
-('Jose Franciso', 'Muñoz','Palao', 'jose@domain.com', '1234', 'yes');
+('Jose Francisco', 'Muñoz','Palao', 'jose@domain.com', '1234', 'yes');
 
 CREATE TABLE destinations (
   ciudad VARCHAR(50) PRIMARY KEY,

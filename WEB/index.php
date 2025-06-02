@@ -12,7 +12,8 @@ session_start();
  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
- <header class="header container">
+  <div class="main-body">
+    <header class="header_container">
     <a href="book_holiday.php" class="book">Book now</a>
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -25,35 +26,47 @@ session_start();
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
       ?>
-      <a href="view_users.php" class="nav-box">View Users</a>
+<?php
+if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+}
+?>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
       <a href="guides.php" class="nav-box">Our Guides</a>
-      <?php
-        if (isset($_SESSION["user"])) {
-            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-        }
-      ?>
     </nav>
   </header>
       <section class="hero-container">
           <div class="hero-image">
-            <img src="images/section1.png" alt="Man holding passport">
+            <img src="images/section1.png" class="man-icon" alt="Man holding passport">
             <img src="images/mapa.png" class="map-icon" alt="Map Icon">
           </div>
         <div class="hero-content">
           <h1><br>Discover the<br> Best Lovely<br> Places</h1>
           <p>Plan and book your perfect trip with expert advice, travel<br> tips, destination information, and inspiration from us.</p>
-          <div class="guides-section">
+        </div>
+        
+      </section>
+      <br><br>
+      <section>
+        <div class="guides-section">
             <a href="guides.php">
           <img src="images/guides.jpg" alt="Our Guides" class="guides-image">
              </a>
         </div>
+        <div class="registro">
+          <?php
+          if (isset($_SESSION["user"])) {
+            echo '<p>¡Welcome ' . $_SESSION["user"] . '!<br><br>A lot of adventures are waiting for you, <br><br><a href="book_holiday.php">¡Book a trip now!</a></p>';
+          } else {
+            echo '<p>¡Welcome to DAW travels!<br><br>A lot of adventures are waiting here, <br><br><a href="register_user.php">¡Register now!</a></p>';
+          }
+          ?>
+          
         </div>
-        
       </section>
       
       <section class="destinations-container">
-        <h2>Find Popular<br> Destination</h2>
+        <h2 class="titulo-interactivo">Find Popular<br> Destination</h2>
         <div class="card-container">
           <div class="card">
             <img src="images/noticia1.jpg" alt="Mountain Hiking" class="card-image">
@@ -82,7 +95,7 @@ session_start();
       <section class="newsletter">
         <div class="newsletter-content">
           <mg src="images/bg-newsletter.jpg" alt="Newsletter" class="newsletter-image">
-          <h2><br>Sign up to our newsletter</h2>
+          <h2>Sign up to our newsletter</h2>
           <p>Receive the latest news, updates, and many other things<br> every week.</p>
             <form method="post" action="">
             <input type="email" name="newsletter_email" placeholder="    Enter your email address" required>
@@ -92,6 +105,7 @@ session_start();
       </section>
      </main>
 
+ 
 <?php
 require_once "DB_Connection.php";
 ?>
@@ -101,5 +115,6 @@ require_once "DB_Connection.php";
     <p>Enjoy the touring</p>
     <img src="images/redes.png" alt="DAW Logo" class="redes">
   </footer>
+</div>
 </body>
 </html>

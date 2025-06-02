@@ -6,7 +6,8 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="header container">
+  <div class ="main-body">
+    <header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -19,7 +20,11 @@
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
       ?>
-      <a href="view_users.php" class="nav-box">View Users</a>
+<?php
+if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+}
+?>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
       <a href="guides.php" class="nav-box">Our Guides</a>
       <?php
@@ -108,5 +113,6 @@
     <p>Enjoy the touring</p>
     <img src="images/redes.png" alt="DAW Logo" class="redes">
   </footer>
+  </div>
 </body>
 </html>

@@ -9,7 +9,8 @@ session_start();
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
- <header class="header container">
+  <div class ="main-body">
+    <header class="header container">
     <a href="book_holiday.php" class="book">Book now</a>
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -80,5 +81,6 @@ session_start();
     <p>Enjoy the touring</p>
     <img src="images/redes.png" alt="DAW Logo" class="redes">
   </footer>
+  </div>
 </body>
 </html>
