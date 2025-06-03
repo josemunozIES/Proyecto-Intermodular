@@ -16,7 +16,7 @@ session_start();
         <img src="images/logo.png" alt="DAW Logo" class="logo">
         <a href="index.php" class="nav-box">Home</a>
         <?php
-            if (isset($_SESSION["user"])) {
+            if (isset($_SESSION["user"]) && $_SESSION['user']) {
                 echo '<a href="logout.php" class="nav-box">Logout</a>';
             } else {
                 echo '<a href="login.php" class="nav-box">Login</a>';
@@ -37,7 +37,7 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 <?php
 include("DB_Connection.php");
 
-$query = "SELECT * FROM users";
+$query = "SELECT * FROM usuarios";
 $result = pg_query($conn, $query);
 
 if (!$result) {
@@ -56,7 +56,7 @@ while ($row = pg_fetch_assoc($result)) {
     echo "<p>" . htmlspecialchars($row['email']) . "</p>";
 
     echo "<div style='margin-top: 15px; display: flex; gap: 10px; justify-content: center;'>";
-    echo "<a href='edit_user.php?id=" . $row['email'] . "' class='sub-button'>Modificar</a>";
+    echo "<a href='edit_user.php?email=" . urlencode($row['email']) . "' class='sub-button'>Modificar</a>";
     echo "<a href='delete_user.php?id=" . $row['email'] . "' class='sub-button' onclick=\"return confirm('¿Estás seguro de que quieres eliminar este usuario?');\">Eliminar</a>";
     echo "</div>";
     echo "</div>";

@@ -59,29 +59,27 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 include("DB_Connection.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
 
-    // Escapar entrada para evitar inyección
-    $email = pg_escape_string($conn, $email);
-    $password = pg_escape_string($conn, $password);
+    if (isset($_POST['email']) && isset($_POST['password'])) {
+        $email = pg_escape_string($conn, $_POST['email']);
+        $password = pg_escape_string($conn, $_POST['password']);
 
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
-    $result = pg_query($conn, $query);
+        $query = "SELECT * FROM usuarios WHERE email = '$email' AND password = '$password'";
+        $result = pg_query($conn, $query);
 
-    if ($result && pg_num_rows($result) == 1) {
-        $user = pg_fetch_assoc($result);
-        
-        // Guardar datos de sesión
-        $_SESSION['email'] = $user['email'];
-        $_SESSION['nombre'] = $user['nombre'];
-        $_SESSION['admin'] = $user['admin'] === 't'; // 't' = true en PostgreSQL
+        if ($result && pg_num_rows($result) == 1) {
+            $user = pg_fetch_assoc($result);
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['nombre'] = $user['nombre'];
+            $_SESSION['admin'] = $user['admin'] === 't'; // PostgreSQL true
 
-        // Redirigir al index
-        header("Location: index.php");
-        exit();
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "<p class='error'>Correo o contraseña incorrectos.</p>";
+        }
     } else {
-        echo "<p class='error'>Correo o contraseña incorrectos.</p>";
+        echo "<p class='error'>Faltan datos del formulario.</p>";
     }
 }
 ?>
