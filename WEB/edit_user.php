@@ -25,7 +25,7 @@ session_start();
         ?>
 <?php
 if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+    echo '<a href="view_users.php" class="nav-box">View users</a>';
 }
 ?>
         <a href="view_bookings.php" class="nav-box">My Bookings</a>

@@ -1,3 +1,7 @@
+
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,25 +17,16 @@
       <img src="images/logo.png" alt="DAW Logo" class="logo">
       <a href="index.php" class="nav-box">Home</a>
       <?php
-          if (isset($_SESSION["user"])) {
+          if (isset($_SESSION["nombre"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
       ?>
-<?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
-}
-?>
+      <a href="view_users.php" class="nav-box">View Users</a>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
       <a href="guides.php" class="nav-box">Our Guides</a>
-      <?php
-        if (isset($_SESSION["user"])) {
-            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-        }
-      ?>
     </nav>
   </header>
   <main class="container">
@@ -49,76 +44,82 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
         <input type="password" name="repeat_password" required>
 
         <label>First Name:</label>
-        <input type="text" name="nombre" required>  <!-- Fixed field name -->
+        <input type="text" name="name" required>
 
         <label>First Surname:</label>
-        <input type="text" name="apellido" required>
+        <input type="text" name="surname" required>
 
         <label>Second Surname (optional):</label>
-        <input type="text" name="apellido2">
+        <input type="text" name="second_surname">
 
-         <label>Admin :</label>
-        <input type="checkbox" name="admin">       
+        <label>Age:</label>
+        <input type="number" name="age" min="18" required>
 
         <label>Passport Number (optional):</label>
-        <input type="text" name="numero_pasaporte">  <!-- Fixed field name -->
+        <input type="text" name="passport">
 
-        <label>Country of Issuance (optional):</label>  <!-- Added new field -->
-        <input type="text" name="pais_expedicion">
+        <label>Country of Origin (only if you add the passport):</label>
+        <input type="text" name="country">
 
         <input class="book1" type="submit" value="Register">
       </form>
 
       <?php
-include("DB_Connection.php");
+      require_once "DB_Connection.php";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Recoger datos del usuario
-    $nombre = pg_escape_string($conn, $_POST['nombre']);
-    $apellido = pg_escape_string($conn, $_POST['apellido']);
-    $apellido2 = pg_escape_string($conn, $_POST['apellido2'] ?? '');
-    $email = pg_escape_string($conn, $_POST['email']);
-    $password = pg_escape_string($conn, $_POST['password']);
-    $admin = pg_escape_string($conn, $_POST['admin']);
-    
+      if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = trim($_POST["email"]);
+        $passwordInput = trim($_POST["password"]);
+        $repeatPassword = trim($_POST["repeat_password"]);
+        $nombre = trim($_POST["name"]);
+        $apellido = trim($_POST["surname"]);
+        $apellido2 = !empty($_POST["second_surname"]) ? trim($_POST["second_surname"]) : null;
+        $edad = intval($_POST["age"]);
+        $passport = !empty($_POST["passport"]) ? trim($_POST["passport"]) : null;
+        $country = !empty($_POST["country"]) ? trim($_POST["country"]) : null;
 
-    // Insertar en tabla users (fixed table name)
-    $query_usuario = "
-        INSERT INTO usuarios (email, nombre, apellido, apellido2,password, admin)
-        VALUES ('$email', '$nombre', '$apellido', '$apellido2', '$password', '$admin')
-    ";
-    $res_usuario = pg_query($conn, $query_usuario);
+        if ($passwordInput !== $repeatPassword) {
+            echo "<p class='error'>Passwords do not match. Please try again.</p>";
+            exit();
+        }
 
-    if (!$res_usuario) {
-        echo "<p class='error'>Error creando usuario: " . pg_last_error($conn) . "</p>";
-        exit;
-    }
+        // Insert usuario sin passport
+        $result = @pg_query_params($conn,
+            "INSERT INTO usuarios (email, nombre, apellido, apellido2, edad, password)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING email",
+            array($email, $nombre, $apellido, $apellido2, $edad, $passwordInput));
 
-    // Comprobar si se ingresó pasaporte
-    if (!empty($numero_pasaporte)) {
-        // Insertar en tabla pasaporte
-        $query_pasaporte = "
-            INSERT INTO pasaporte (numero_pasaporte, pais_expedición)
-            VALUES ('$numero_pasaporte', '$pais_expedicion')
-            ON CONFLICT (numero_pasaporte) DO NOTHING
-        ";
-        pg_query($conn, $query_pasaporte);
+        if ($result !== false) {
+            // Si se indicó pasaporte, insertar en pasaporte y pertenece_pasaporte
+            if ($passport !== null) {
+                // Inserta en pasaporte si no existe (usa ON CONFLICT para evitar errores)
+                $passport_query = "INSERT INTO pasaporte (numero_pasaporte, pais_expedición)
+                                  VALUES ($1, $2)
+                                  ON CONFLICT (numero_pasaporte) DO NOTHING";
+                pg_query_params($conn, $passport_query, array($passport, $country));
 
-        // Insertar relación en pertenece_pasaporte
-        $query_relacion = "
-            INSERT INTO pertenece_pasaporte (email_usuario, numero_pasaporte)
-            VALUES ('$email', '$numero_pasaporte')
-        ";
-        $res_relacion = pg_query($conn, $query_relacion);
-        
-        if (!$res_relacion) {
-            echo "<p class='error'>Error registrando pasaporte: " . pg_last_error($conn) . "</p>";
+                // Relaciona el usuario con el pasaporte
+                $relation_query = "INSERT INTO pertenece_pasaporte (email_usuario, numero_pasaporte)
+                                  VALUES ($1, $2)
+                                  ON CONFLICT (email_usuario) DO NOTHING";
+                pg_query_params($conn, $relation_query, array($email, $passport));
+            }
+
+            $row = pg_fetch_assoc($result);
+            header("refresh:3;url=index.php");
+            echo "<p class='success'> User created successfully! Email: " . htmlspecialchars($row['email']) . "</p>";
+        } else {
+            $error = pg_last_error($conn);
+            if (strpos($error, "duplicate key value violates unique constraint") !== false) {
+                header("refresh:3;url=register_user.php");
+                echo "<p class='error'> --------> ERROR! Email already in use. Please try another. <--------</p>";
+            } else {
+                header("refresh:3;url=register_user.php");
+                echo "<p class='error'> ------- Error creating user: $error --------</p>";
+            }
         }
     }
-
-    echo "<p class='success'>Usuario registrado correctamente.</p>";
-}
-?>
+      ?>
     </div>
   </main>
 

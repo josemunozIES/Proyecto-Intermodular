@@ -9,96 +9,96 @@ session_start();
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class ="main-body">
+  <div class="main-body">
     <header class="header container">
-    <a href="book_holiday.php" class="book">Book now</a>
-    <nav class="nav-boxes">
-      <img src="images/logo.png" alt="DAW Logo" class="logo">
-      <a href="index.php" class="nav-box">Home</a>
-      <?php
-          if (isset($_SESSION["user"])) {
+      <a href="book_holiday.php" class="book">Book now</a>
+      <nav class="nav-boxes">
+        <img src="images/logo.png" alt="DAW Logo" class="logo">
+        <a href="index.php" class="nav-box">Home</a>
+        <?php
+          if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
-      ?>
+
+          if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="view_users.php" class="nav-box">View users</a>';
+          }
+        ?>
+        <a href="view_bookings.php" class="nav-box">My Bookings</a>
+        <a href="guides.php" class="nav-box">Our Guides</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <div class="login-container">
+        <h1 style="font-size: 38px;">My Holidays</h1>
+
 <?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+include("DB_Connection.php");
+$email = $_SESSION['email'] ?? null;
+
+if (!$email) {
+    echo "<p class='error'>You must be logged in to view your bookings.</p>";
+    exit;
+}
+
+// Mostrar información de pasaporte
+$query_passport = "
+    SELECT p.numero_pasaporte, p.pais_expedición
+    FROM pertenece_pasaporte pp
+    JOIN pasaporte p ON pp.numero_pasaporte = p.numero_pasaporte
+    WHERE pp.email_usuario = $1
+";
+$result_passport = pg_query_params($conn, $query_passport, [$email]);
+
+echo "<div class='update-passport-message'>";
+if ($result_passport && pg_num_rows($result_passport) > 0) {
+    $passport = pg_fetch_assoc($result_passport);
+    echo "<p><strong>Passport:</strong> " . htmlspecialchars($passport['numero_pasaporte']) . "</p>";
+    echo "<p><strong>Issued in:</strong> " . htmlspecialchars($passport['pais_expedición']) . "</p>";
+} else {
+    echo "<p>You haven't registered a passport. <a href='register_passport.php'>Click here to register one</a>.</p>";
+}
+echo "</div>";
+
+// Mostrar reservas
+$query_bookings = "
+    SELECT b.inicio_booking, b.final_booking, d.ciudad, d.pais, d.id
+    FROM bookings b
+    JOIN destinos d ON b.id_destino = d.id
+    WHERE b.email_usuario = $1
+    ORDER BY b.inicio_booking DESC
+";
+$result_bookings = pg_query_params($conn, $query_bookings, [$email]);
+
+if ($result_bookings && pg_num_rows($result_bookings) > 0) {
+    echo "<h2 style='margin-top: 30px;'>Your Bookings</h2>";
+    echo "<div class='booking-list'>";
+    while ($row = pg_fetch_assoc($result_bookings)) {
+        echo "<div class='booking-card'>";
+        $id_destino = $row['id'];
+        $ciudad = htmlspecialchars($row['ciudad']);
+        echo "<p><strong>Destination:</strong> <a href='destination_detail.php?id=$id_destino'>$ciudad</a></p>";
+        echo "<p><strong>Start Date:</strong> " . htmlspecialchars($row['inicio_booking']) . "</p>";
+        echo "<p><strong>End Date:</strong> " . htmlspecialchars($row['final_booking']) . "</p>";
+        echo "</div>";
+    }
+    echo "</div>";
+} else {
+    echo "<p class='error' style='margin-top: 20px;'>You don't have any bookings yet.</p>";
 }
 ?>
-      <a href="view_bookings.php" class="nav-box">My Bookings</a>
-      <a href="guides.php" class="nav-box">Our Guides</a>
-      <?php
-        if (isset($_SESSION["user"])) {
-            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-        }
-      ?>
-    </nav>
-  </header>
+      </div>
+    </main>
 
-  <main class="container">
-    <div class="login-container">
-      <h1 style="font-size: 38px;">My Holidays</h1>
-
-      <?php
-      require_once "DB_Connection.php";
-
-      $user_email = $_SESSION["email"] ?? null;
-
-      if (!$user_email) {
-          echo "<p class='error'>You must be logged in to view your bookings.</p>";
-          echo "<p class='login-message'>Please <a href='login.php' class='nav-box'>log in</a> to continue.</p>";
-      } else {
-          $result = pg_query_params($conn, "SELECT passport FROM users WHERE email=$1", [$user_email]);
-          $user = pg_fetch_assoc($result);
-          $passport = $user['passport'] ?? null;
-
-          if (!$passport) {
-              echo "<p class='error'>No passport found in your profile. Please update it.</p>";
-          } else {
-              $query = "
-                  SELECT destination_ciudad, booking_begin, booking_end, created_at
-                  FROM bookings
-                  WHERE user_passport = $1
-                  ORDER BY booking_begin
-              ";
-              $result = pg_query_params($conn, $query, [$passport]);
-
-              echo "<div class='bookings-container'>";
-
-              if (pg_num_rows($result) > 0) {
-                  while ($row = pg_fetch_assoc($result)) {
-                      $destination = htmlspecialchars($row['destination_ciudad']);
-                      $begin = htmlspecialchars($row['booking_begin']);
-                      $end = htmlspecialchars($row['booking_end']);
-                      $dateTime = new DateTime($row['created_at']);
-                      $created_at = $dateTime->format('Y-m-d H:i');
-
-                      echo "<div class='booking-row'>";
-                      echo "<p><strong>Destination:</strong> $destination</p>";
-                      echo "<p><strong>Booking Start:</strong> $begin</p>";
-                      echo "<p><strong>Booking End:</strong> $end</p>";
-                      echo "<p><strong>Booked on:</strong> $created_at</p>";
-                      echo "</div>";
-                  }
-              } else {
-                  echo "<p>No bookings found.</p>";
-              }
-
-              echo "</div>";
-          }
-      }
-      ?>
-    </div>
-  </main>
-
-  <footer class="footer-container">
-    <img src="images/logo.png" alt="DAW Logo" class="logo1">
-    <p>Enjoy the touring</p>
-    <img src="images/redes.png" alt="DAW Logo" class="redes">
-  </footer>
+    <footer class="footer-container">
+      <img src="images/logo.png" alt="DAW Logo" class="logo1">
+      <p>Enjoy the touring</p>
+      <img src="images/redes.png" alt="DAW Logo" class="redes">
+    </footer>
   </div>
 </body>
 </html>

@@ -17,9 +17,9 @@ session_start();
     <a href="book_holiday.php" class="book">Book now</a>
     <nav class="nav-boxes">
       <img src="images/logo.png" alt="DAW Logo" class="logo">
-      <a href="index.php" class="nav-box">Home</a>
+     <a href="index.php" class="nav-box">Home</a>
       <?php
-          if (isset($_SESSION["user"])) {
+          if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
@@ -28,7 +28,7 @@ session_start();
       ?>
 <?php
 if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+    echo '<a href="view_users.php" class="nav-box">View users</a>';
 }
 ?>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
@@ -55,8 +55,8 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
         </div>
         <div class="registro">
           <?php
-          if (isset($_SESSION["user"])) {
-            echo '<p>¡Welcome ' . $_SESSION["user"] . '!<br><br>A lot of adventures are waiting for you, <br><br><a href="book_holiday.php">¡Book a trip now!</a></p>';
+          if (isset($_SESSION["email"])) {
+            echo '<p>¡Welcome ' . $_SESSION["nombre"] . '!<br><br>A lot of adventures are waiting for you, <br><br><a href="book_holiday.php">¡Book a trip now!</a></p>';
           } else {
             echo '<p>¡Welcome to DAW travels!<br><br>A lot of adventures are waiting here, <br><br><a href="register_user.php">¡Register now!</a></p>';
           }
