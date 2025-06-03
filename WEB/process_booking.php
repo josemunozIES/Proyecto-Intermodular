@@ -3,49 +3,114 @@ session_start();
 require_once "DB_Connection.php";
 
 $user_email = $_SESSION["email"] ?? null;
-$destination = $_POST["destination"] ?? null;
+$id_destino = intval($_POST["destination"] ?? 0);
 $booking_begin = $_POST["booking_begin"] ?? null;
 $booking_end = $_POST["booking_end"] ?? null;
 
-if (!$user_email || !$destination || !$booking_begin || !$booking_end) {
-    echo "<p class='error'>Missing booking information. Please complete all fields.</p>";
-    exit();
-}
+$message = "";
+$success = false;
 
-$result = pg_query_params($conn, "SELECT passport FROM users WHERE email=$1", [$user_email]);
-$user = pg_fetch_assoc($result);
-$passport = $user['passport'] ?? null;
-
-if (empty($passport)) {
-    header("refresh:3;url=register_passport.php");
-    echo "<p class='error'>You must have a passport number to book a holiday.</p>";
-    exit();
-}
-
-$overlap_query = "
-    SELECT 1 FROM bookings
-    WHERE user_passport = $1
-      AND daterange(booking_begin, booking_end, '[]') &&
-          daterange($2::date, $3::date, '[]')
-";
-$overlap_check = pg_query_params($conn, $overlap_query, [$passport, $booking_begin, $booking_end]);
-
-if (pg_num_rows($overlap_check) > 0) {
-    header("refresh:3;url=book_holiday.php");
-    echo "<p class='error'>Error: You already have a booking that overlaps with these dates.</p>";
-    exit();
-}
-
-$insert = pg_query_params($conn, "
-    INSERT INTO bookings (user_passport, destination_ciudad, booking_begin, booking_end)
-    VALUES ($1, $2, $3, $4)
-", [$passport, $destination, $booking_begin, $booking_end]);
-
-if ($insert) {
-    header("refresh:3;url=index.php");
-    echo "<p class='success'>Booking successful! Destination: $destination from $booking_begin to $booking_end.</p>";
+// Validaciones
+if (!$user_email || !$id_destino || !$booking_begin || !$booking_end) {
+    $message = "Missing booking information. Please complete all fields.";
+} elseif (strtotime($booking_begin) > strtotime($booking_end)) {
+    $message = "Start date must be before or equal to end date.";
 } else {
-    header("refresh:3;url=book_holiday.php");
-    echo "<p class='error'>Error booking the destination.</p>";
+    // Comprobar pasaporte
+    $query_passport = "SELECT numero_pasaporte FROM pertenece_pasaporte WHERE email_usuario = $1";
+    $result = pg_query_params($conn, $query_passport, [$user_email]);
+    $passport_data = pg_fetch_assoc($result);
+    $passport = $passport_data['numero_pasaporte'] ?? null;
+
+    if (empty($passport)) {
+        $message = "You must have a registered passport to book a holiday.";
+        $redirect = "register_passport.php";
+    } else {
+        // Verificar solapamientos
+        $query_overlap = "
+            SELECT 1 FROM bookings
+            WHERE email_usuario = $1
+              AND daterange(inicio_booking, final_booking, '[]') &&
+                  daterange($2::date, $3::date, '[]')
+        ";
+        $check = pg_query_params($conn, $query_overlap, [$user_email, $booking_begin, $booking_end]);
+
+        if (!$check) {
+            $message = "Error checking booking overlap: " . pg_last_error($conn);
+        } elseif (pg_num_rows($check) > 0) {
+            $message = "You already have a booking that overlaps with these dates.";
+            $redirect = "book_holiday.php";
+        } else {
+            // Insertar reserva
+            $query_insert = "
+                INSERT INTO bookings (email_usuario, id_destino, inicio_booking, final_booking)
+                VALUES ($1, $2, $3, $4)
+            ";
+            $insert = pg_query_params($conn, $query_insert, [$user_email, $id_destino, $booking_begin, $booking_end]);
+
+            if ($insert) {
+                $message = "Booking successful! Destination ID: $id_destino from $booking_begin to $booking_end.";
+                $success = true;
+                $redirect = "index.php";
+            } else {
+                $message = "Error booking the destination: " . pg_last_error($conn);
+                $redirect = "book_holiday.php";
+            }
+        }
+    }
+}
+
+if (!isset($redirect)) {
+    $redirect = $success ? "index.php" : "book_holiday.php";
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking Status</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta http-equiv="refresh" content="4;url=<?= $redirect ?>">
+</head>
+<body>
+  <div class="main-body">
+    <header class="header container">
+      <a href="book_holiday.php" class="book">Book now</a>
+      <nav class="nav-boxes">
+        <img src="images/logo.png" alt="DAW Logo" class="logo">
+        <a href="index.php" class="nav-box">Home</a>
+        <?php
+        if (isset($_SESSION["email"])) {
+            echo '<a href="logout.php" class="nav-box">Logout</a>';
+        } else {
+            echo '<a href="login.php" class="nav-box">Login</a>';
+            echo '<a href="register_user.php" class="nav-box">Register</a>';
+        }
+        if (isset($_SESSION["admin"]) && $_SESSION["admin"]) {
+            echo '<a href="view_users.php" class="nav-box">View Users</a>';
+        }
+        ?>
+        <a href="view_bookings.php" class="nav-box">My Bookings</a>
+        <a href="guides.php" class="nav-box">Our Guides</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <div class="login-container">
+        <h1 style="font-size: 36px;">Booking Status</h1>
+        <p class="<?= $success ? 'success' : 'error' ?>"><?= htmlspecialchars($message) ?></p>
+        <p style="text-align: center; margin-top: 10px;">
+          You will be redirected shortly...<br>
+          <a href="<?= $redirect ?>" class="sub-button">Click here if not redirected</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="footer-container">
+      <img src="images/logo.png" alt="DAW Logo" class="logo1">
+      <p>Enjoy the touring</p>
+      <img src="images/redes.png" alt="DAW Logo" class="redes">
+    </footer>
+  </div>
+</body>
+</html>
