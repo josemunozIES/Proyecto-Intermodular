@@ -10,7 +10,7 @@ session_start();
 </head>
 <body>
   <div class="main-body">
-     <header class="header container">
+     <header class="header_container">
       <a href="book_holiday.php" class="book">Book now</a>
       <nav class="nav-boxes">
         <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -32,6 +32,11 @@ session_start();
         <a href="view_bookings.php" class="nav-box">My Bookings</a>
         <a href="guides.php" class="nav-box">Our Guides</a>
         <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Edit destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
         if (isset($_SESSION["nombre"])) {
             echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
         }
@@ -68,7 +73,8 @@ if ($result_passport && pg_num_rows($result_passport) > 0) {
     echo "<p><strong>Passport:</strong> " . htmlspecialchars($passport['numero_pasaporte']) . "</p>";
     echo "<p><strong>Issued in:</strong> " . htmlspecialchars($passport['pais_expedición']) . "</p>";
 } else {
-    echo "<p>You haven't registered a passport. <a href='register_passport.php'>Click here to register one</a>.</p>";
+   $userEmail = urlencode($_SESSION['email']);
+    echo '<p class="update-passport-message"><a class="nav-boxs" href="edit_user.php?email=' . $userEmail . '">Click here to update your profile with your passport number</a>.</p>';
 }
 echo "</div>";
 

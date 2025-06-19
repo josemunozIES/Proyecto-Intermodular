@@ -35,6 +35,11 @@ session_start();
         <a href="view_bookings.php" class="nav-box">My Bookings</a>
         <a href="guides.php" class="nav-box">Our Guides</a>
         <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Edit destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
         if (isset($_SESSION["nombre"])) {
             echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
         }

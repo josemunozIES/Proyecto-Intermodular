@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +11,7 @@ session_start();
 </head>
 <body>
 <div class="main-body">
-    <header class="header container">
+    <header class="header_container">
       <a href="book_holiday.php" class="book">Book now</a>
       <nav class="nav-boxes">
         <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -32,6 +33,11 @@ session_start();
         <a href="view_bookings.php" class="nav-box">My Bookings</a>
         <a href="guides.php" class="nav-box">Our Guides</a>
         <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Edit destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
         if (isset($_SESSION["nombre"])) {
             echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
         }
@@ -78,9 +84,10 @@ while ($row = pg_fetch_assoc($result)) {
     echo "<a href='edit_user.php?email=" . urlencode($row['email']) . "' class='sub-button'>Edit</a>";
     
    
-    if ($isAdmin || ($isUser && $_SESSION['email'] === $row['email'])) {
-        echo "<a href='delete_user.php?id=" . urlencode($row['email']) . "' class='sub-button' onclick=\"return confirm('Are you sure you want to delete this account?');\">Delete</a>";
-    }
+if ($isAdmin || ($isUser && $_SESSION['email'] === $row['email'])) {
+    echo "<a href='delete_user.php?email=" . urlencode($row['email']) . "' class='sub-button' onclick=\"return confirm('Are you sure you want to delete this account?');\">Delete</a>";
+}
+
 
     echo "</div>";
     echo "</div>";
