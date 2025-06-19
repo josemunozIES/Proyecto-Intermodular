@@ -16,25 +16,19 @@ session_start();
       <img src="images/logo.png" alt="DAW Logo" class="logo">
       <a href="index.php" class="nav-box">Home</a>
       <?php
-          if (isset($_SESSION["user"])) {
+          if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
+
+          if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="view_users.php" class="nav-box">View users</a>';
+          }
       ?>
-<?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
-}
-?>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
       <a href="guides.php" class="nav-box">Our Guides</a>
-      <?php
-        if (isset($_SESSION["user"])) {
-            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-        }
-      ?>
     </nav>
   </header>
 
@@ -47,28 +41,14 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 
       $email = $_SESSION["email"] ?? null;
 
+      // Obtener lista de destinos con guía
       $query = "
-          SELECT d.ciudad, d.pais, g.nombre AS guide_name, g.apellido AS guide_surname
-          FROM destinations d
-          LEFT JOIN guides g ON d.ciudad = g.ciudad
+          SELECT d.id, d.ciudad, d.pais, g.nombre AS guide_name, g.apellido AS guide_surname
+          FROM destinos d
+          LEFT JOIN guias g ON d.id = g.id_pais
           ORDER BY d.ciudad
       ";
       $result = pg_query($conn, $query);
-
-      $destinations = [];
-      while ($row = pg_fetch_assoc($result)) {
-          $city = htmlspecialchars($row['ciudad']);
-          $country = htmlspecialchars($row['pais']);
-          $guide = htmlspecialchars($row['guide_name'] . ' ' . $row['guide_surname']);
-
-          if (!isset($destinations[$city])) {
-              $destinations[$city] = [
-                  'country' => $country,
-                  'guides' => []
-              ];
-          }
-          $destinations[$city]['guides'][] = $guide;
-      }
       ?>
 
       <form method="post" action="process_booking.php" id="bookingForm">
@@ -76,9 +56,11 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
         <select name="destination" required>
           <option value="" disabled selected>Choose a destination</option>
           <?php
-          foreach ($destinations as $city => $data) {
-              $guides = implode(", ", $data['guides']);
-              echo '<option value="' . $city . '">' . $city . ', ' . $data['country'] . ' </option>';
+          while ($row = pg_fetch_assoc($result)) {
+              $id = $row['id'];
+              $city = htmlspecialchars($row['ciudad']);
+              $country = htmlspecialchars($row['pais']);
+              echo "<option value='$id'>$city, $country</option>";
           }
           ?>
         </select>
@@ -94,7 +76,14 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 
       <?php
       if ($email) {
-          $result = @pg_query_params($conn, "SELECT passport FROM users WHERE email=$1", [$email]);
+          // Comprobar si tiene pasaporte
+          $query = "
+              SELECT p.numero_pasaporte AS passport
+              FROM pertenece_pasaporte pp
+              JOIN pasaporte p ON pp.numero_pasaporte = p.numero_pasaporte
+              WHERE pp.email_usuario = $1
+          ";
+          $result = pg_query_params($conn, $query, [$email]);
           $user = pg_fetch_assoc($result);
           $passport = $user['passport'] ?? null;
 
@@ -132,6 +121,5 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
     <img src="images/redes.png" alt="DAW Logo" class="redes">
   </footer>
   </div>
- 
 </body>
 </html>

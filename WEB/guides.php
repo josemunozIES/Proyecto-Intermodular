@@ -17,7 +17,7 @@ session_start();
         <img src="images/logo.png" alt="DAW Logo" class="logo">
         <a href="index.php" class="nav-box">Home</a>
         <?php
-            if (isset($_SESSION["user"])) {
+            if (isset($_SESSION["email"])) {
                 echo '<a href="logout.php" class="nav-box">Logout</a>';
             } else {
                 echo '<a href="login.php" class="nav-box">Login</a>';
@@ -26,16 +26,11 @@ session_start();
         ?>
 <?php
 if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+    echo '<a href="view_users.php" class="nav-box">View users</a>';
 }
 ?>
         <a href="view_bookings.php" class="nav-box">My Bookings</a>
         <a href="guides.php" class="nav-box">Our Guides</a>
-        <?php
-          if (isset($_SESSION["user"])) {
-              echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-          }
-        ?>
       </nav>
     </header>
 
@@ -94,7 +89,52 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
           </div>
 
       </div>
-    </main>
+      <?php
+include("DB_Connection.php");
+
+$query = "SELECT * FROM guias WHERE id>6";
+$result = pg_query($conn, $query);
+
+if (!$result) {
+    echo "<p class='error'>Error al obtener los guias.</p>";
+    exit;
+}
+
+echo "<br><br><div class='guides-container'>";  // Flexbox estilo guía
+
+while ($row = pg_fetch_assoc($result)) {
+    echo "<div class='guide-card'>";
+    echo "<h3>" . htmlspecialchars($row['nombre']) . " " . htmlspecialchars($row['apellido']);
+    if (!empty($row['apellido2'])) echo " " . htmlspecialchars($row['apellido2']);
+    echo "</h3>";
+    echo "<p><strong>Specialty:</strong> " . htmlspecialchars($row['especialidad']) . "</p>";
+
+
+    // Obtener la ciudad y país a partir del id_pais
+    $id_pais = (int) $row['id_pais'];
+    $destino_query = "SELECT ciudad, pais FROM destinos WHERE id = $id_pais";
+    $destino_result = pg_query($conn, $destino_query);
+
+    if ($destino_result && pg_num_rows($destino_result) > 0) {
+        $destino = pg_fetch_assoc($destino_result);
+        echo "<p>City: " . htmlspecialchars($destino['ciudad']) . "</p>";
+        echo "<p>Country: " . htmlspecialchars($destino['pais']) . "</p>";
+    } else {
+        echo "<p>Destino no encontrado.</p>";
+    }
+
+    echo "</div>";  // cierre de guide-card
+}
+?>
+</main>
+<?php
+if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+  echo "<br><div class='añadir-destino-box'>";
+  echo '<a href="new_guide.php" class="sub-button">Add guide</a>';
+  echo "</div>";
+}
+
+      ?>
 
     <footer class="footer-container">
       <img src="images/logo.png" alt="DAW Logo" class="logo1">

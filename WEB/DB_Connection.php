@@ -3,7 +3,7 @@ $host = "localhost";
 $port = "5432"; 
 $dbname = "Travel_Site_DataBase"; 
 $user = "postgres"; 
-$password = "1234"; 
+$password = "4Tr0ll4cc0unt; 
 
 $conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
 if (!$conn) {

@@ -18,7 +18,7 @@ session_start();
       <img src="images/logo.png" alt="DAW Logo" class="logo">
       <a href="index.php" class="nav-box">Home</a>
       <?php
-          if (isset($_SESSION["user"])) {
+          if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
@@ -27,16 +27,12 @@ session_start();
       ?>
 <?php
 if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">Ver Usuarios</a>';
+    echo '<a href="view_users.php" class="nav-box">View users</a>';
 }
 ?>
       <a href="view_bookings.php" class="nav-box">My Bookings</a>
       <a href="guides.php" class="nav-box">Our Guides</a>
-      <?php
-        if (isset($_SESSION["user"])) {
-            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["user"]) . '!</p>';
-        }
-      ?>
+
     </nav>
   </header>
 <main class="container">
@@ -59,29 +55,27 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 include("DB_Connection.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
 
-    // Escapar entrada para evitar inyección
-    $email = pg_escape_string($conn, $email);
-    $password = pg_escape_string($conn, $password);
+    if (isset($_POST['email']) && isset($_POST['password'])) {
+        $email = pg_escape_string($conn, $_POST['email']);
+        $password = pg_escape_string($conn, $_POST['password']);
 
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
-    $result = pg_query($conn, $query);
+        $query = "SELECT * FROM usuarios WHERE email = '$email' AND password = '$password'";
+        $result = pg_query($conn, $query);
 
-    if ($result && pg_num_rows($result) == 1) {
-        $user = pg_fetch_assoc($result);
-        
-        // Guardar datos de sesión
-        $_SESSION['email'] = $user['email'];
-        $_SESSION['nombre'] = $user['nombre'];
-        $_SESSION['admin'] = $user['admin'] === 't'; // 't' = true en PostgreSQL
+        if ($result && pg_num_rows($result) == 1) {
+            $user = pg_fetch_assoc($result);
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['nombre'] = $user['nombre'];
+            $_SESSION['admin'] = $user['admin'] === 't'; // PostgreSQL true
 
-        // Redirigir al index
-        header("Location: index.php");
-        exit();
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "<p class='error'>Correo o contraseña incorrectos.</p>";
+        }
     } else {
-        echo "<p class='error'>Correo o contraseña incorrectos.</p>";
+        echo "<p class='error'>Faltan datos del formulario.</p>";
     }
 }
 ?>
