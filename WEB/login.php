@@ -12,18 +12,28 @@ session_start();
 
 <body>
   <div class ="main-body">
+<<<<<<< HEAD
 <header class="header container">
       <a href="book_holiday.php" class="book">Book now</a>
       <nav class="nav-boxes">
         <img src="images/logo.png" alt="DAW Logo" class="logo">
         <a href="index.php" class="nav-box">Home</a>
         <?php
+=======
+    <header class="header container">
+    <a href="book_holiday.php" class="book">Book now</a>
+    <nav class="nav-boxes">
+      <img src="images/logo.png" alt="DAW Logo" class="logo">
+      <a href="index.php" class="nav-box">Home</a>
+      <?php
+>>>>>>> develop
           if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
+<<<<<<< HEAD
 
           if (isset($_SESSION['admin']) && $_SESSION['admin']) {
               echo '<a href="view_users.php" class="nav-box">View users</a>';
@@ -40,6 +50,19 @@ session_start();
       ?>
       </nav>
     </header>
+=======
+      ?>
+<?php
+if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+    echo '<a href="view_users.php" class="nav-box">View users</a>';
+}
+?>
+      <a href="view_bookings.php" class="nav-box">My Bookings</a>
+      <a href="guides.php" class="nav-box">Our Guides</a>
+
+    </nav>
+  </header>
+>>>>>>> develop
 <main class="container">
     <div class="login-container">
       <h1 style="font-size: 38px;">Login</h1>
