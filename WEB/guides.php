@@ -17,20 +17,26 @@ session_start();
         <img src="images/logo.png" alt="DAW Logo" class="logo">
         <a href="index.php" class="nav-box">Home</a>
         <?php
-            if (isset($_SESSION["email"])) {
-                echo '<a href="logout.php" class="nav-box">Logout</a>';
-            } else {
-                echo '<a href="login.php" class="nav-box">Login</a>';
-                echo '<a href="register_user.php" class="nav-box">Register</a>';
-            }
+          if (isset($_SESSION["email"])) {
+              echo '<a href="logout.php" class="nav-box">Logout</a>';
+          } else {
+              echo '<a href="login.php" class="nav-box">Login</a>';
+              echo '<a href="register_user.php" class="nav-box">Register</a>';
+          }
+
+          if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="view_users.php" class="nav-box">View users</a>';
+          } else if (isset($_SESSION["email"])){
+            echo '<a href="view_users.php" class="nav-box">My Profile</a>';
+          }
         ?>
-<?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">View users</a>';
-}
-?>
         <a href="view_bookings.php" class="nav-box">My Bookings</a>
         <a href="guides.php" class="nav-box">Our Guides</a>
+        <?php
+        if (isset($_SESSION["nombre"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
+        }
+      ?>
       </nav>
     </header>
 

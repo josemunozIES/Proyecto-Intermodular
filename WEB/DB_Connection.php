@@ -1,9 +1,9 @@
 <?php
 $host = "localhost"; 
-$port = "5433"; 
+$port = "5432"; 
 $dbname = "Travel_Site_DataBase"; 
 $user = "postgres"; 
-$password = "1234567A.8"; 
+$password = "1234"; 
 
 $conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
 if (!$conn) {
