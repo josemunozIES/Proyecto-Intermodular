@@ -67,6 +67,7 @@ CREATE TABLE guias (
   CONSTRAINT pk_id PRIMARY KEY(id),
   CONSTRAINT fk_ciudad FOREIGN KEY (id_pais) REFERENCES destinos(id)
   		ON UPDATE CASCADE
+      ON DELETE CASCADE
 );
 
 INSERT INTO guias (id,nombre, apellido, apellido2, especialidad, id_pais) VALUES

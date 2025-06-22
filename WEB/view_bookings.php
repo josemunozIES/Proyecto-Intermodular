@@ -10,7 +10,7 @@ session_start();
 </head>
 <body>
   <div class="main-body">
-    <header class="header container">
+     <header class="header_container">
       <a href="book_holiday.php" class="book">Book now</a>
       <nav class="nav-boxes">
         <img src="images/logo.png" alt="DAW Logo" class="logo">
@@ -25,12 +25,25 @@ session_start();
 
           if (isset($_SESSION['admin']) && $_SESSION['admin']) {
               echo '<a href="view_users.php" class="nav-box">View users</a>';
+          } else if (isset($_SESSION["email"])){
+            echo '<a href="view_users.php" class="nav-box">My Profile</a>';
           }
         ?>
         <a href="view_bookings.php" class="nav-box">My Bookings</a>
         <a href="guides.php" class="nav-box">Our Guides</a>
+        <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
+        if (isset($_SESSION["nombre"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
+        }
+      ?>
       </nav>
     </header>
+
 
     <main class="container">
       <div class="login-container">
@@ -60,13 +73,20 @@ if ($result_passport && pg_num_rows($result_passport) > 0) {
     echo "<p><strong>Passport:</strong> " . htmlspecialchars($passport['numero_pasaporte']) . "</p>";
     echo "<p><strong>Issued in:</strong> " . htmlspecialchars($passport['pais_expedición']) . "</p>";
 } else {
-    echo "<p>You haven't registered a passport. <a href='register_passport.php'>Click here to register one</a>.</p>";
+   $userEmail = urlencode($_SESSION['email']);
+    echo '<p class="update-passport-message"><a class="nav-boxs" href="edit_user.php?email=' . $userEmail . '">Click here to update your profile with your passport number</a>.</p>';
 }
 echo "</div>";
 
 // Mostrar reservas
 $query_bookings = "
-    SELECT b.inicio_booking, b.final_booking, d.ciudad, d.pais, d.id
+    SELECT 
+        b.id AS booking_id,         -- aquí traemos el id del booking
+        b.inicio_booking, 
+        b.final_booking, 
+        d.ciudad, 
+        d.pais, 
+        d.id AS id_destino          -- alias para id_destino
     FROM bookings b
     JOIN destinos d ON b.id_destino = d.id
     WHERE b.email_usuario = $1
@@ -77,19 +97,32 @@ $result_bookings = pg_query_params($conn, $query_bookings, [$email]);
 if ($result_bookings && pg_num_rows($result_bookings) > 0) {
     echo "<h2 style='margin-top: 30px;'>Your Bookings</h2>";
     echo "<div class='booking-list'>";
+    
     while ($row = pg_fetch_assoc($result_bookings)) {
         echo "<div class='booking-card'>";
-        $id_destino = $row['id'];
+        
+        $booking_id = (int)$row['booking_id'];         // ya existe ahora
+        $id_destino = (int)$row['id_destino'];         // ya existe ahora
         $ciudad = htmlspecialchars($row['ciudad']);
+        
         echo "<p><strong>Destination:</strong> <a href='destination_detail.php?id=$id_destino'>$ciudad</a></p>";
         echo "<p><strong>Start Date:</strong> " . htmlspecialchars($row['inicio_booking']) . "</p>";
         echo "<p><strong>End Date:</strong> " . htmlspecialchars($row['final_booking']) . "</p>";
+        
+        // Delete form
+        echo "<form action='delete_booking.php' method='post' style='margin-top: 10px;'>
+                <input type='hidden' name='booking_id' value='$booking_id'>
+                <input type='submit' value='Delete' class='sub-button' onclick=\"return confirm('Are you sure you want to delete this booking?');\">
+              </form>";
+        
         echo "</div>";
     }
+    
     echo "</div>";
 } else {
     echo "<p class='error' style='margin-top: 20px;'>You don't have any bookings yet.</p>";
 }
+
 ?>
       </div>
     </main>

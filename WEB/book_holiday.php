@@ -10,12 +10,12 @@ session_start();
 </head>
 <body>
   <div class="main-body">
-  <header class="header container">
-    <a href="book_holiday.php" class="book">Book now</a>
-    <nav class="nav-boxes">
-      <img src="images/logo.png" alt="DAW Logo" class="logo">
-      <a href="index.php" class="nav-box">Home</a>
-      <?php
+<header class="header_container">
+      <a href="book_holiday.php" class="book">Book now</a>
+      <nav class="nav-boxes">
+        <img src="images/logo.png" alt="DAW Logo" class="logo">
+        <a href="index.php" class="nav-box">Home</a>
+        <?php
           if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
@@ -25,12 +25,25 @@ session_start();
 
           if (isset($_SESSION['admin']) && $_SESSION['admin']) {
               echo '<a href="view_users.php" class="nav-box">View users</a>';
+          } else if (isset($_SESSION["email"])){
+            echo '<a href="view_users.php" class="nav-box">My Profile</a>';
           }
+        ?>
+        <a href="view_bookings.php" class="nav-box">My Bookings</a>
+        <a href="guides.php" class="nav-box">Our Guides</a>
+        <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
+        if (isset($_SESSION["nombre"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
+        }
       ?>
-      <a href="view_bookings.php" class="nav-box">My Bookings</a>
-      <a href="guides.php" class="nav-box">Our Guides</a>
-    </nav>
-  </header>
+      </nav>
+    </header>
+
 
   <main class="container">
     <div class="login-container">
@@ -56,12 +69,23 @@ session_start();
         <select name="destination" required>
           <option value="" disabled selected>Choose a destination</option>
           <?php
+          $query_with_passport = "
+              SELECT d.id, d.ciudad, d.pais, d.requiere_pasaporte, g.nombre AS guide_name, g.apellido AS guide_surname
+              FROM destinos d
+              LEFT JOIN guias g ON d.id = g.id_pais
+              ORDER BY d.ciudad
+          ";
+          $result = pg_query($conn, $query_with_passport);
+
           while ($row = pg_fetch_assoc($result)) {
               $id = $row['id'];
               $city = htmlspecialchars($row['ciudad']);
               $country = htmlspecialchars($row['pais']);
-              echo "<option value='$id'>$city, $country</option>";
+              $passportRequired = $row['requiere_pasaporte'] === 't' ? ' (Passport required)' : ' (No passport required)';
+              
+              echo "<option value='$id'>$city, $country$passportRequired</option>";
           }
+
           ?>
         </select>
 
@@ -88,17 +112,36 @@ session_start();
           $passport = $user['passport'] ?? null;
 
           if (empty($passport)) {
-              echo "<p class='error' style='margin-top:20px;'>You need a passport to complete your booking. Please register it below.</p>";
-              echo '<p class="update-passport-message"><a class="nav-boxs" href="register_passport.php">Click here to update your profile with your passport number</a>.</p>';
-              echo "
-              <script>
-                document.getElementById('bookingForm').addEventListener('submit', function(e) {
-                  e.preventDefault();
-                  alert('You must register your passport number before booking!');
-                });
-              </script>
-              ";
+          echo "
+          <script>
+            const destinationPassportMap = {};
+          ";
+
+          $query = "SELECT id, requiere_pasaporte FROM destinos";
+          $result = pg_query($conn, $query);
+          while ($row = pg_fetch_assoc($result)) {
+              $id = (int)$row["id"];
+              $requires = $row["requiere_pasaporte"] === 't' ? 'true' : 'false';
+              echo "destinationPassportMap[$id] = $requires;\n";
           }
+
+          echo "
+            document.getElementById('bookingForm').addEventListener('submit', function(e) {
+              const selectedDestination = document.querySelector('select[name=\"destination\"]').value;
+              const needsPassport = destinationPassportMap[selectedDestination];
+
+              if (needsPassport === true || needsPassport === 'true') {
+                e.preventDefault();
+                alert('You must register your passport number before booking this destination.');
+              }
+            });
+          </script>
+          ";
+
+         
+          $userEmail = urlencode($_SESSION['email']);
+          echo '<p class="update-passport-message"><a class="nav-boxs" href="edit_user.php?email=' . $userEmail . '">Click here to update your profile with your passport number</a>.</p>';
+      }
       } else {
           echo "<p class='error' style='margin-top:20px;'>You must be logged in to make a booking.</p>";
           echo "<p class='login-message'>Please <a href='login.php' class='nav-box'>log in</a> to continue.</p>";

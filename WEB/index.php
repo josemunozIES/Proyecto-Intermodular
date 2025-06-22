@@ -14,71 +14,64 @@ session_start();
 <body>
   <div class="main-body">
     <header class="header_container">
-    <a href="book_holiday.php" class="book">Book now</a>
-    <nav class="nav-boxes">
-      <img src="images/logo.png" alt="DAW Logo" class="logo">
-     <a href="index.php" class="nav-box">Home</a>
-      <?php
+      <a href="book_holiday.php" class="book">Book now</a>
+      <nav class="nav-boxes">
+        <img src="images/logo.png" alt="DAW Logo" class="logo">
+        <a href="index.php" class="nav-box">Home</a>
+        <?php
           if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
-      ?>
-<?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">View users</a>';
-}
-?>
-      <a href="view_bookings.php" class="nav-box">My Bookings</a>
-      <a href="guides.php" class="nav-box">Our Guides</a>
-    </nav>
-  </header>
-      <section class="hero-container">
-          <div class="hero-image">
-            <img src="images/section1.png" class="man-icon" alt="Man holding passport">
-            <img src="images/mapa.png" class="map-icon" alt="Map Icon">
-          </div>
-        <div class="hero-content">
-          <h1><br>Discover the<br> Best Lovely<br> Places</h1>
-          <p>Plan and book your perfect trip with expert advice, travel<br> tips, destination information, and inspiration from us.</p>
-        </div>
-        
-      </section>
-      <br><br>
-      <section>
-        <div class="guides-section">
-            <a href="guides.php">
-          <img src="images/guides.jpg" alt="Our Guides" class="guides-image">
-             </a>
-        </div>
-        <div class="registro">
-          <?php
-          if (isset($_SESSION["email"])) {
-            echo '<p>¡Welcome ' . $_SESSION["nombre"] . '!<br><br>A lot of adventures are waiting for you, <br><br><a href="book_holiday.php">¡Book a trip now!</a></p>';
-          } else {
-            echo '<p>¡Welcome to DAW travels!<br><br>A lot of adventures are waiting here, <br><br><a href="register_user.php">¡Register now!</a></p>';
+
+          if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="view_users.php" class="nav-box">View users</a>';
+          } else if (isset($_SESSION["email"])){
+            echo '<a href="view_users.php" class="nav-box">My Profile</a>';
           }
-          ?>
-          
+        ?>
+        <a href="view_bookings.php" class="nav-box">My Bookings</a>
+        <a href="guides.php" class="nav-box">Our Guides</a>
+        <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
+        if (isset($_SESSION["nombre"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
+        }
+      ?>
+      </nav>
+    </header>
+
+      <section class="hero-container">
+        <div class="hero-content">
+          <h1><br>Discover the<br> Most Lovely<br> Places</h1>
+          <p>Plan and book your perfect trip with expert<br>advice, travel tips, destination information,<br>and inspiration from us.</p>
+        </div>
+        <div class="hero-image">
+          <img src="images/section1.png" class="man-icon" alt="Man holding passport">
+          <img src="images/mapa.png" class="map-icon" alt="Map Icon">
         </div>
       </section>
-      
       <section class="destinations-container">
-        <h2 class="titulo-interactivo">Find Popular<br> Destination</h2>
+        <h2 class="titulo-interactivo">Popular Destinations</h2>
+        <hr>
         <div class="card-container">
           <div class="card">
             <img src="images/noticia1.jpg" alt="Mountain Hiking" class="card-image">
-            <h3>Mountain Hiking Tour</h3>
-            <p>Mountain Hicking Tour</p>
+            <h3>Bali, Indonesia</h3>
+            <p>Touristic Tour</p>
             <a style="text-decoration:none" href="book_holiday.php" class="card-button">Book Now</a>
 
           </div>
           <div class="card">
             <img src="images/noticia2.jpg" alt="Machu Picchu" class="card-image">
             <h3>Machu Picchu, Peru</h3>
-            <p>Machu Picchu, Peru</p>
+            <p>Touristic Tour</p>
             <a style="text-decoration:none" href="book_holiday.php" class="card-button">Book Now</a>
 
           </div>
@@ -90,7 +83,35 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 
           </div>
         </div>
+        <hr>
       </section>
+      <br><br>
+      <section>
+        <div class="guides-section">
+          <div class="card">
+              <a href="guides.php">
+                <img src="images/guides.jpg" alt="Our Guides" class="card-know">
+                <h2 class="title-guides">Get to know our guides</h2>
+              </a>
+          </div>
+          <div class="card register-box">
+            <?php
+              if (isset($_SESSION["email"])) {
+                echo '<p>¡Welcome ' . $_SESSION["nombre"] . '!<br><br>A lot of adventures are waiting for you, <br><br><a href="book_holiday.php">¡Book a trip now!</a></p>';
+              } else {
+                echo '<p>¡Welcome to DAW travels!<br><br>A lot of adventures are waiting here, <br><br><a href="register_user.php">¡Register now!</a></p>';
+              }
+            ?>
+          </div>
+          <div class="card">
+            <a href="list_destinations.php">
+                <img src="images/destination.jpg" alt="Our Guides" class="card-know">
+                <h2 class="title-destination">Discover all of our destinations</h2>
+            </a>
+          </div>
+        </div>
+      </section>
+      
       
       <section class="newsletter">
         <div class="newsletter-content">
@@ -107,7 +128,7 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 
  
 <?php
-require_once "DB_Connection.php";
+  require_once "DB_Connection.php";
 ?>
 
   <footer class="footer-container">

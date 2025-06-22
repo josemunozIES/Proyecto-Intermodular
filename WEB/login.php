@@ -12,29 +12,39 @@ session_start();
 
 <body>
   <div class ="main-body">
-    <header class="header container">
-    <a href="book_holiday.php" class="book">Book now</a>
-    <nav class="nav-boxes">
-      <img src="images/logo.png" alt="DAW Logo" class="logo">
-      <a href="index.php" class="nav-box">Home</a>
-      <?php
+<header class="header_container">
+      <a href="book_holiday.php" class="book">Book now</a>
+      <nav class="nav-boxes">
+        <img src="images/logo.png" alt="DAW Logo" class="logo">
+        <a href="index.php" class="nav-box">Home</a>
+        <?php
           if (isset($_SESSION["email"])) {
               echo '<a href="logout.php" class="nav-box">Logout</a>';
           } else {
               echo '<a href="login.php" class="nav-box">Login</a>';
               echo '<a href="register_user.php" class="nav-box">Register</a>';
           }
-      ?>
-<?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-    echo '<a href="view_users.php" class="nav-box">View users</a>';
-}
-?>
-      <a href="view_bookings.php" class="nav-box">My Bookings</a>
-      <a href="guides.php" class="nav-box">Our Guides</a>
 
-    </nav>
-  </header>
+          if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="view_users.php" class="nav-box">View users</a>';
+          } else if (isset($_SESSION["email"])){
+            echo '<a href="view_users.php" class="nav-box">My Profile</a>';
+          }
+        ?>
+        <a href="view_bookings.php" class="nav-box">My Bookings</a>
+        <a href="guides.php" class="nav-box">Our Guides</a>
+        <?php
+        if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+              echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
+          } else {
+            echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
+          }
+        if (isset($_SESSION["nombre"])) {
+            echo '<p style="font-size: 20px;">Hi ' . htmlspecialchars($_SESSION["nombre"]) . '!</p>';
+        }
+      ?>
+      </nav>
+    </header>
 <main class="container">
     <div class="login-container">
       <h1 style="font-size: 38px;">Login</h1>
@@ -67,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user = pg_fetch_assoc($result);
             $_SESSION['email'] = $user['email'];
             $_SESSION['nombre'] = $user['nombre'];
-            $_SESSION['admin'] = $user['admin'] === 't'; // PostgreSQL true
+            $_SESSION['admin'] = $user['admin'] === 't'; 
 
             header("Location: index.php");
             exit();
