@@ -17,8 +17,15 @@ if (!$isAdmin && !$isOwner) {
     exit;
 }
 
+// Paso 1: eliminar reservas
+pg_query_params($conn, "DELETE FROM bookings WHERE email_usuario = $1", [$emailToDelete]);
+
+// Paso 2: eliminar relación con pasaporte (si existe)
+pg_query_params($conn, "DELETE FROM pertenece_pasaporte WHERE email_usuario = $1", [$emailToDelete]);
+
+// Paso 3: eliminar usuario
 $query = "DELETE FROM usuarios WHERE email = $1";
-$result = pg_query_params($conn, $query, array($emailToDelete));
+$result = pg_query_params($conn, $query, [$emailToDelete]);
 
 if ($result) {
     if ($isOwner) {
@@ -31,6 +38,6 @@ if ($result) {
         exit;
     }
 } else {
-    echo "Error deleting user.";
+    echo "Error deleting user: " . pg_last_error($conn);
 }
 ?>

@@ -35,11 +35,7 @@ session_start();
         <a href="guides.php" class="nav-box">Our Guides</a>
         <?php
         if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-<<<<<<< HEAD
               echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
-=======
-              echo '<a href="list_destinations.php" class="nav-box">Edit destinations</a>';
->>>>>>> origin/develop
           } else {
             echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
           }
@@ -95,19 +91,13 @@ while ($row = pg_fetch_assoc($result)) {
     echo "<div style='margin-top: 15px; display: flex; gap: 10px; justify-content: center;'>";
 
     if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-<<<<<<< HEAD
         echo '<a href="edit_destination.php?id=' . $row['id'] . '" class="sub-button">Edit</a>';
-=======
->>>>>>> origin/develop
         echo "<a href='delete_destination.php?id=" . urlencode($row['id']) . "' 
                  class='sub-button' 
                  onclick=\"return confirm('Are you sure you want to delete this destination?');\">
                  Delete
               </a>";
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/develop
     }
 
     echo "</div>";

@@ -33,11 +33,7 @@ session_start();
         <a href="guides.php" class="nav-box">Our Guides</a>
         <?php
         if (isset($_SESSION['admin']) && $_SESSION['admin']) {
-<<<<<<< HEAD
               echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
-=======
-              echo '<a href="list_destinations.php" class="nav-box">Edit destinations</a>';
->>>>>>> origin/develop
           } else {
             echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
           }
@@ -86,7 +82,6 @@ $passport = pg_fetch_assoc($result_passport);
 
     <label for="apellido">Last Name:</label>
     <input type="text" name="apellido" value="<?= htmlspecialchars($user['apellido']) ?>">
-<<<<<<< HEAD
 
     <label for="apellido2">Second Last Name:</label>
     <input type="text" name="apellido2" value="<?= htmlspecialchars($user['apellido2']) ?>">
@@ -94,18 +89,6 @@ $passport = pg_fetch_assoc($result_passport);
     <label for="edad">Age:</label>
     <input type="number" name="edad" value="<?= htmlspecialchars($user['edad']) ?>">
 
-=======
-
-    <label for="apellido2">Second Last Name:</label>
-    <input type="text" name="apellido2" value="<?= htmlspecialchars($user['apellido2']) ?>">
-
-    <label for="edad">Age:</label>
-    <input type="number" name="edad" value="<?= htmlspecialchars($user['edad']) ?>">
-
-    <label for="email">Email:</label>
-    <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
-
->>>>>>> origin/develop
     <label for="password">New Password (leave blank to keep current):</label>
     <input type="password" name="password">
 

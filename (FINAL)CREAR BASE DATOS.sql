@@ -1,16 +1,13 @@
 DROP TABLE IF EXISTS guias, usuarios, destinos, bookings, pertenece_pasaporte, pasaporte CASCADE;
 
--- Travel_Site_DataBase
-
 CREATE TABLE usuarios (
-  id SERIAL UNIQUE,  
   email VARCHAR(100),
   nombre VARCHAR(50) NOT NULL,
   apellido VARCHAR(50) NOT NULL,
   apellido2 VARCHAR(50),
   edad INTEGER CHECK (edad >= 18),
   password VARCHAR(255) NOT NULL, 
-  admin BOOLEAN DEFAULT false,
+  admin BOOLEAN DEFAULT 'false',
   CONSTRAINT pk_usuarios PRIMARY KEY(email)
 );
 
@@ -46,15 +43,17 @@ CREATE TABLE pasaporte(
   CONSTRAINT pk_pasaporte PRIMARY KEY(numero_pasaporte)
 );
 
-CREATE TABLE pertenece_pasaporte (
-  email_usuario VARCHAR(100) PRIMARY KEY,  
-  numero_pasaporte VARCHAR(50) UNIQUE,    
+CREATE TABLE pertenece_pasaporte(
+  email_usuario VARCHAR(100),
+  numero_pasaporte VARCHAR(50),
+  CONSTRAINT pk_usuario PRIMARY KEY(email_usuario),
+  CONSTRAINT uk_pasaporte UNIQUE(numero_pasaporte),
   CONSTRAINT fk_usuario FOREIGN KEY(email_usuario) REFERENCES usuarios(email)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE,
+  		ON UPDATE CASCADE
+		ON DELETE CASCADE,
   CONSTRAINT fk_pasaporte FOREIGN KEY(numero_pasaporte) REFERENCES pasaporte(numero_pasaporte)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
+  		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 CREATE TYPE especialidades as ENUM('Geography', 'History', 'Architecture', 'Food');
