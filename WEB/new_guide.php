@@ -33,7 +33,11 @@
         <a href="guides.php" class="nav-box">Our Guides</a>
         <?php
         if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+<<<<<<< HEAD
               echo '<a href="list_destinations.php" class="nav-box">Our destinations</a>';
+=======
+              echo '<a href="list_destinations.php" class="nav-box">Edit destinations</a>';
+>>>>>>> origin/develop
           } else {
             echo '<a href="list_destinations.php" class="nav-box">Destinations</a>';
           }

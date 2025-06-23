@@ -15,7 +15,11 @@
 .book:hover{
   background-color: rgb(246, 111, 77);
   text-decoration: none;
+<<<<<<< HEAD
   color: green;
+=======
+  color: white;
+>>>>>>> origin/develop
 }
 .container{
 	max-width: 1300px;
@@ -560,6 +564,7 @@ select {
     border-radius: 5px;
     font-weight: bold;
 }
+<<<<<<< HEAD
 .form-grid {
   display: flex;
   flex-wrap: wrap;
@@ -612,3 +617,5 @@ select {
 .button-return:hover{
   background-color: rgb(15, 203, 109);
 }
+=======
+>>>>>>> origin/develop
